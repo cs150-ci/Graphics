@@ -8,7 +8,6 @@ camera 0 0 5 0 0 0 0 1 0 90.0
 
 light 0 5 10 1 0.6 0.3 0.0 1.0 
 light 0 5 -10 1 0 0.3 0.6 1 
-# Parameters: 0 = no texture, 1 = wood, 2 = stone (not implemented yet)
 texture 1
 
 ambient 0.2 0.2 0.2 1 
