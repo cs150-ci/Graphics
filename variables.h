@@ -78,3 +78,8 @@ EXTERN GLuint specularcol ;
 EXTERN GLuint emissioncol ; 
 EXTERN GLuint shininesscol ; 
 
+// Variables to use for texture mapping
+EXTERN GLubyte texture[256][256][3] ;
+EXTERN GLuint texNames[2] ; // texture buffer
+EXTERN GLuint istex ;  // blend parameter for texturing
+EXTERN GLfloat texturing ;

@@ -14,6 +14,9 @@ varying vec4 color ;
 varying vec3 mynormal ; 
 varying vec4 myvertex ; 
 
+uniform sampler2D tex ; 
+uniform int istex ; 
+
 const int numLights = 10 ; 
 uniform bool enablelighting ; // are we lighting at all (global).
 uniform vec4 lightposn[numLights] ; // positions of lights 
@@ -32,8 +35,9 @@ uniform vec4 emission ;
 uniform float shininess ; 
 
 void main (void) 
-{       
-    if (enablelighting) {       
+{
+    if (istex > 0) gl_FragColor = texture2D(tex, gl_TexCoord[0].st) ;
+    else if (enablelighting) {       
         
         vec4 finalcolor ; 
 

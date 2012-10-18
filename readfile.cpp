@@ -111,6 +111,12 @@ void readfile(const char * filename) {
           }
         }
 
+        // Texture Mapping Command
+        else if (cmd == "texture") {
+          validinput = readvals(s, 1, values) ; // Texture type
+          if (validinput) texturing = values[0]; // 0 = no texture, 1 = wood
+        }
+
         // Material Commands 
         // Ambient, diffuse, specular, shininess
         // Filling this in is pretty straightforward, so I've left it in 

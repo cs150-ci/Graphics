@@ -13,18 +13,182 @@
 #include "shaders.h"
 #include "Transform.h"
 #include <FreeImage.h>
-#include "UCB/grader.h"
 
 using namespace std ; 
 
 // Main variables in the program.  
 #define MAINPROGRAM 
 #include "variables.h" 
-#include "readfile.h" // prototypes for readfile.cpp  
-void display(void) ;  // prototype for display function.  
+#include "readfile.h" // prototypes for readfile.cpp   
+#include "texture.h"
 
-Grader grader;
-bool allowGrader = false;
+// New helper transformation function to transform vector by modelview 
+// May be better done using newer glm functionality.
+// Provided for your convenience.  Use is optional.  
+// Some of you may want to use the more modern routines in readfile.cpp 
+// that can also be used.  
+
+void transformvec (const GLfloat input[4], GLfloat output[4]) {
+  GLfloat modelview[16] ; // in column major order
+  glGetFloatv(GL_MODELVIEW_MATRIX, modelview) ; 
+  
+  for (int i = 0 ; i < 4 ; i++) {
+    output[i] = 0 ; 
+    for (int j = 0 ; j < 4 ; j++) 
+      output[i] += modelview[4*j+i] * input[j] ; 
+  }
+}
+
+void display() {
+	glClearColor(0, 0, 1, 0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //glUniform1i(istex,0) ;
+    //cout << texturing << endl;
+    glUniform1i(istex, (int)texturing) ; 
+    glBindTexture(GL_TEXTURE_2D, (int)(texturing-1)) ;
+    //drawtexture(FLOOR,texNames[0]) ; // Texturing floor 
+    //drawobject(CUBE) ; 
+    //glUniform1i(istex,0) ; // Other items aren't textured 
+        
+    // I'm including the basic matrix setup for model view to 
+    // give some sense of how this works.  
+
+	glMatrixMode(GL_MODELVIEW);
+	mat4 mv ; 
+
+    if (useGlu) mv = glm::lookAt(eye,center,up) ; 
+	else {
+          mv = Transform::lookAt(eye,center,up) ; 
+          mv = glm::transpose(mv) ; // accounting for row major
+        }
+        glLoadMatrixf(&mv[0][0]) ; 
+
+        // Set Light and Material properties for the teapot
+        // Lights are transformed by current modelview matrix. 
+        // The shader can't do this globally. 
+        // So we need to do so manually.  
+        if (numused) {
+          glUniform1i(enablelighting,true) ;
+
+          // YOUR CODE FOR HW 2 HERE.  
+          // You need to pass the lights to the shader. 
+          // Remember that lights are transformed by modelview first.  
+
+          // Transform lights by modelview first
+          GLfloat lightinput[4], lightoutput[4];
+          for (int i = 0; i < numused; i++) {
+              lightinput[0] = lightposn[i*4];
+              lightinput[1] = lightposn[i*4+1];
+              lightinput[2] = lightposn[i*4+2];
+              lightinput[3] = lightposn[i*4+3];
+              transformvec(lightinput, lightoutput);
+              lightransf[i*4] = lightoutput[0];
+              lightransf[i*4+1] = lightoutput[1];
+              lightransf[i*4+2] = lightoutput[2];
+              lightransf[i*4+3] = lightoutput[3];
+          }
+              
+          // Pass to shaders, as in mytest3.cpp display code
+          glUniform1i(numusedcol, numused);
+
+          glUniform4fv(lightpos,10,lightransf);
+          glUniform4fv(lightcol,10,lightcolor);
+
+          glUniform4fv(ambientcol,1,ambient);
+          glUniform4fv(diffusecol,1,diffuse);
+          glUniform4fv(specularcol,1,specular);
+          glUniform4fv(emissioncol,1,emission);
+          glUniform1f(shininesscol,shininess);
+          
+        }
+        else glUniform1i(enablelighting,false) ; 
+
+        // Transformations for objects, involving translation and scaling 
+        mat4 sc(1.0) , tr(1.0), transf(1.0) ; 
+        sc = Transform::scale(sx,sy,1.0) ; 
+        tr = Transform::translate(tx,ty,0.0) ; 
+
+        // YOUR CODE FOR HW 2 HERE.  
+        // You need to use scale, translate and modelview to 
+        // set up the net transformation matrix for the objects.  
+        // Account for GLM issues etc.  
+        transf = mv*glm::transpose(tr)*glm::transpose(sc);
+        glLoadMatrixf(&transf[0][0]) ; 
+
+        for (int i = 0 ; i < numobjects ; i++) {
+          object * obj = &(objects[i]) ; 
+
+          {
+          // YOUR CODE FOR HW 2 HERE. 
+          // Set up the object transformations 
+          // And pass in the appropriate material properties
+          mat4 objtrans = transf * (obj->transform);
+          glLoadMatrixf(&objtrans[0][0]);
+          glUniform1i(numusedcol, numused);
+          glUniform4fv(lightpos,10,lightransf);
+          glUniform4fv(lightcol,10,lightcolor);
+          glUniform4fv(ambientcol,1,obj->ambient);
+          glUniform4fv(diffusecol,1,obj->diffuse);
+          glUniform4fv(specularcol,1,obj->specular);
+          glUniform4fv(emissioncol,1,obj->emission);
+          glUniform1f(shininesscol,obj->shininess);
+          }
+
+          // Actually draw the object
+          // We provide the actual glut drawing functions for you.  
+          if (obj -> type == cube) {
+            glutSolidCube(obj->size) ; 
+          }
+          else if (obj -> type == sphere) {
+            const int tessel = 20 ; 
+            glutSolidSphere(obj->size, tessel, tessel) ; 
+          }
+          else if (obj -> type == teapot) {
+            glutSolidTeapot(obj->size) ; 
+            //drawobject(FLOOR) ; // Texturing floor 
+          }
+
+        }
+    
+        glutSwapBuffers();
+}
+
+/*
+void load_obj(const char* filename, vector<glm::vec4> &vertices, vector<glm::vec3> &normals, vector<GLushort> &elements) {
+  ifstream in(filename, ios::in);
+  if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
+ 
+  string line;
+  while (getline(in, line)) {
+    printf("%c",line[0]);
+    if (line.substr(0,2) == "v ") {
+      istringstream s(line.substr(2));
+      glm::vec4 v; s >> v.x; s >> v.y; s >> v.z; v.w = 1.0f;
+      vertices.push_back(v);
+    }  else if (line.substr(0,2) == "f ") {
+      istringstream s(line.substr(2));
+      GLushort a,b,c;
+      s >> a; s >> b; s >> c;
+      a--; b--; c--;
+      elements.push_back(a); elements.push_back(b); elements.push_back(c);
+    }
+    else if (line[0] == '#') { }
+    else { }
+  }
+ 
+  //normals.resize(mesh->vertices.size(), glm::vec3(0.0, 0.0, 0.0));
+  for (int i = 0; i < elements.size(); i+=3) {
+    GLushort ia = elements[i];
+    GLushort ib = elements[i+1];
+    GLushort ic = elements[i+2];
+    glm::vec3 normal = glm::normalize(glm::cross(
+      glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
+      glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
+    normals[ia] = normals[ib] = normals[ic] = normal;
+  }
+}
+*/
 
 // Uses the Projection matrices (technically deprecated) to set perspective 
 // We could also do this in a more modern fashion with glm.  
@@ -63,7 +227,6 @@ void saveScreenshot(string fname) {
 void printHelp() {
   std::cout << "\npress 'h' to print this message again.\n" 
        << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
-	    << "press 'i' to run image grader test cases\n"
             << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"       
             << "press 'r' to reset the transformations.\n"
             << "press 'v' 't' 's' to do view [default], translate, scale.\n"
@@ -82,13 +245,6 @@ void keyboard(unsigned char key, int x, int y) {
 		std::cout << "amount set to " << amount << "\n" ; 
 		break;
 	case 'i':
-		if(allowGrader) {
-			std::cout << "Running tests...\n";
-			grader.runTests();
-			std::cout << "Done! [ESC to quit]\n";
-		} else {
-			std::cout << "Error: no input file specified for grader\n";
-		}
 		break;
 	case 'g':
 		useGlu = !useGlu;
@@ -167,12 +323,33 @@ void init() {
       emissioncol = glGetUniformLocation(shaderprogram,"emission") ;       
       shininesscol = glGetUniformLocation(shaderprogram,"shininess") ;       
 
+	glGenBuffers(numperobj*numobjects+ncolors+1, buffers) ; // 1 for texcoords 
+	initcolorscube() ; 
+
+	// Initialize texture
+	// inittexture("wood.ppm", fragmentprogram) ; 
+	inittexture("data/stone.ppm", shaderprogram, 1) ;
+        inittexture("data/wood.ppm", shaderprogram, 0) ;
+        // Define a sampler.  See page 709 in red book, 7th ed.
+        GLint texsampler ; 
+        texsampler = glGetUniformLocation(shaderprogram, "tex") ; 
+        glUniform1i(texsampler, 0) ; // Could also be GL_TEXTURE0 
+        istex = glGetUniformLocation(shaderprogram,"istex") ; 
+
+	// Initialize objects
+	initobject(FLOOR, (GLfloat *) floorverts, sizeof(floorverts), (GLfloat *) floorcol, sizeof(floorcol), (GLubyte *) floorinds, sizeof(floorinds), GL_POLYGON) ; 
+	//       initobject(CUBE, (GLfloat *) cubeverts, sizeof(cubeverts), (GLfloat *) cubecol, sizeof (cubecol), (GLubyte *) cubeinds, sizeof (cubeinds), GL_QUADS) ; 
+	initobjectnocol(CUBE, (GLfloat *) cubeverts, sizeof(cubeverts), (GLubyte *) cubeinds, sizeof(cubeinds), GL_QUADS) ; 
+
+	// Enable the depth test
+	glEnable(GL_DEPTH_TEST) ;
+	glDepthFunc (GL_LESS) ; // The default option
 }
 
 int main(int argc, char* argv[]) {
 
 	if (argc < 2) {
-		cerr << "Usage: transforms scenefile [grader input (optional)]\n"; 
+		cerr << "Usage: transforms scenefile\n"; 
 		exit(-1); 
 	}
 
@@ -187,18 +364,6 @@ int main(int argc, char* argv[]) {
 	glutKeyboardFunc(keyboard);
 	glutReshapeFunc(reshape);
 	glutReshapeWindow(w, h);
-
-	if (argc > 2) {
-		allowGrader = true;
-		stringstream tcid;
-		tcid << argv[1] << "." << argv[2];
-		grader.init(tcid.str());
-		grader.loadCommands(argv[2]);
-		grader.bindDisplayFunc(display);
-		grader.bindSpecialFunc(specialKey);
-		grader.bindKeyboardFunc(keyboard);
-		grader.bindScreenshotFunc(saveScreenshot);
-	}
 
 	printHelp();
 	glutMainLoop();
