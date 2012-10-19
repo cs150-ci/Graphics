@@ -15,9 +15,9 @@ endif
 
 RM = /bin/rm -f 
 all: transform
-transform: main.o shaders.o Transform.o readfile.o variables.h readfile.h shaders.h Transform.h texture.h
-	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o readfile.o $(INCFLAGS) $(LDFLAGS) 
-main.o: main.cpp shaders.h Transform.h variables.h texture.h
+transform: main.o shaders.o Transform.o readfile.o variables.h readfile.h shaders.h Transform.h Texture.o Texture.h glm.o glm.h
+	$(CC) $(CFLAGS) -o transforms shaders.o main.o Transform.o readfile.o Texture.o glm.o $(INCFLAGS) $(LDFLAGS) 
+main.o: main.cpp shaders.h Transform.h variables.h Texture.h glm.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c main.cpp
 shaders.o: shaders.cpp shaders.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c shaders.cpp
@@ -25,8 +25,10 @@ readfile.o: readfile.cpp readfile.h variables.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c readfile.cpp
 Transform.o: Transform.cpp Transform.h 
 	$(CC) $(CFLAGS) $(INCFLAGS) -c Transform.cpp  
-grader.o: UCB/grader.cpp UCB/grader.h
-	$(CC) $(CFLAGS) $(INCFLAGS) -c UCB/grader.cpp
+Texture.o: Texture.cpp Texture.h glm.h variables.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c Texture.cpp
+glm.o: glm.cpp glm.h
+	$(CC) $(CFLAGS) $(INCFLAGS) -c glm.cpp
 clean: 
 	$(RM) *.o transforms *.png
 

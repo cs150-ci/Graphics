@@ -20,7 +20,8 @@ using namespace std ;
 #define MAINPROGRAM 
 #include "variables.h" 
 #include "readfile.h" // prototypes for readfile.cpp   
-#include "texture.h"
+#include "Texture.h"
+#include "glm.h"
 
 // New helper transformation function to transform vector by modelview 
 // May be better done using newer glm functionality.
@@ -39,17 +40,35 @@ void transformvec (const GLfloat input[4], GLfloat output[4]) {
   }
 }
 
+GLMmodel* pmodel1 = NULL;
+void drawmodel(char* filename, GLuint texid)
+{
+  // Load the model only if it hasn't been loaded before
+  // If it's been loaded then pmodel1 should be a pointer to the model geometry data...otherwise it's null
+  if (!pmodel1)
+  {
+    // this is the call that actualy reads the OBJ and creates the model object
+    pmodel1 = glmReadOBJ(filename);
+    if (!pmodel1) exit(0);
+    // This will rescale the object to fit into the unity matrix
+    // Depending on your project you might want to keep the original size and positions you had in 3DS Max or GMAX so you may have to comment this.
+    glmUnitize(pmodel1);
+    // These 2 functions calculate triangle and vertex normals from the geometry data.
+    // To be honest I had some problem with very complex models that didn't look to good because of how vertex normals were calculated
+    // So if you can export these directly from you modeling tool do it and comment these line
+    // 3DS Max can calculate these for you and GLM is perfectly capable of loading them
+    glmFacetNormals(pmodel1);
+    glmVertexNormals(pmodel1, 90.0);
+  }
+  glBindTexture(GL_TEXTURE_2D, texNames[texid]);
+  // This is the call that will actually draw the model
+  // Don't forget to tell it if you want textures or not :))
+  glmDraw(pmodel1, GLM_SMOOTH| GLM_TEXTURE);
+}
+
 void display() {
 	glClearColor(0, 0, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    //glUniform1i(istex,0) ;
-    //cout << texturing << endl;
-    glUniform1i(istex, (int)texturing) ; 
-    glBindTexture(GL_TEXTURE_2D, (int)(texturing-1)) ;
-    //drawtexture(FLOOR,texNames[0]) ; // Texturing floor 
-    //drawobject(CUBE) ; 
-    //glUniform1i(istex,0) ; // Other items aren't textured 
         
     // I'm including the basic matrix setup for model view to 
     // give some sense of how this works.  
@@ -119,7 +138,6 @@ void display() {
         for (int i = 0 ; i < numobjects ; i++) {
           object * obj = &(objects[i]) ; 
 
-          {
           // YOUR CODE FOR HW 2 HERE. 
           // Set up the object transformations 
           // And pass in the appropriate material properties
@@ -133,7 +151,10 @@ void display() {
           glUniform4fv(specularcol,1,obj->specular);
           glUniform4fv(emissioncol,1,obj->emission);
           glUniform1f(shininesscol,obj->shininess);
-          }
+
+	  //Setup textures
+    	  glUniform1i(istex, (int)obj->texturing) ;
+    	  glBindTexture(GL_TEXTURE_2D, texNames[(int)(obj->texturing-1)]) ;
 
           // Actually draw the object
           // We provide the actual glut drawing functions for you.  
@@ -146,9 +167,13 @@ void display() {
           }
           else if (obj -> type == teapot) {
             glutSolidTeapot(obj->size) ; 
-            //drawobject(FLOOR) ; // Texturing floor 
           }
-
+	  else if (obj -> type == castle) {
+	    drawmodel("data/castle01.obj", 0) ;
+	  }
+	  else if (obj -> type == sword) {
+	    drawmodel("data/sword.obj", 0) ;
+	  }
         }
     
         glutSwapBuffers();
@@ -215,7 +240,6 @@ void saveScreenshot(string fname) {
 	BYTE pixels[3*pix];	
 	glReadBuffer(GL_FRONT);
 	glReadPixels(0,0,w,h,GL_BGR,GL_UNSIGNED_BYTE, pixels);
-
 	FIBITMAP *img = FreeImage_ConvertFromRawBits(pixels, w, h, w * 3, 24, 0xFF0000, 0x00FF00, 0x0000FF, false);
 	
 	std::cout << "Saving screenshot: " << fname << "\n";
@@ -257,6 +281,9 @@ void keyboard(unsigned char key, int x, int y) {
         case 27:  // Escape to quit
                 exit(0) ;
                 break ;
+	case 'c': // Screenshot
+		saveScreenshot("screenshot.png");
+		break;
         case 'r': // reset eye and up vectors, scale and translate. 
 		eye = eyeinit ; 
 		up = upinit ; 
@@ -323,13 +350,14 @@ void init() {
       emissioncol = glGetUniformLocation(shaderprogram,"emission") ;       
       shininesscol = glGetUniformLocation(shaderprogram,"shininess") ;       
 
-	glGenBuffers(numperobj*numobjects+ncolors+1, buffers) ; // 1 for texcoords 
-	initcolorscube() ; 
+	//glGenBuffers(numperobj*numobjects+ncolors+1, buffers) ; // 1 for texcoords 
+	//initcolorscube() ; 
 
 	// Initialize texture
 	// inittexture("wood.ppm", fragmentprogram) ; 
-	inittexture("data/stone.ppm", shaderprogram, 1) ;
-        inittexture("data/wood.ppm", shaderprogram, 0) ;
+	//inittexture("data/stone.ppm", shaderprogram, 1) ;
+        //inittexture("data/wood.ppm", shaderprogram, 0) ;
+	LoadTexture("data/textura_paralelipied.tga", 0) ;
         // Define a sampler.  See page 709 in red book, 7th ed.
         GLint texsampler ; 
         texsampler = glGetUniformLocation(shaderprogram, "tex") ; 
@@ -337,9 +365,9 @@ void init() {
         istex = glGetUniformLocation(shaderprogram,"istex") ; 
 
 	// Initialize objects
-	initobject(FLOOR, (GLfloat *) floorverts, sizeof(floorverts), (GLfloat *) floorcol, sizeof(floorcol), (GLubyte *) floorinds, sizeof(floorinds), GL_POLYGON) ; 
+	//initobject(FLOOR, (GLfloat *) floorverts, sizeof(floorverts), (GLfloat *) floorcol, sizeof(floorcol), (GLubyte *) floorinds, sizeof(floorinds), GL_POLYGON) ; 
 	//       initobject(CUBE, (GLfloat *) cubeverts, sizeof(cubeverts), (GLfloat *) cubecol, sizeof (cubecol), (GLubyte *) cubeinds, sizeof (cubeinds), GL_QUADS) ; 
-	initobjectnocol(CUBE, (GLfloat *) cubeverts, sizeof(cubeverts), (GLubyte *) cubeinds, sizeof(cubeinds), GL_QUADS) ; 
+	//initobjectnocol(CUBE, (GLfloat *) cubeverts, sizeof(cubeverts), (GLubyte *) cubeinds, sizeof(cubeinds), GL_QUADS) ; 
 
 	// Enable the depth test
 	glEnable(GL_DEPTH_TEST) ;
