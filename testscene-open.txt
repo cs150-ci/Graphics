@@ -42,7 +42,7 @@ translate 0 0 -0.2
 
 # Floor (now with shading, before the door)
 # Materials first.  We don't change specular and shininess
-  ambient 0.547059 0.464706 0.164706 1
+  ambient 0.5 0.2 0.07 1
   diffuse 0 0 0 1
   pushTransform
         translate 0 -1.5 0
@@ -52,7 +52,7 @@ translate 0 0 -0.2
 
 # Floor (now with shading, with the door)
 # Materials first.  We don't change specular and shininess
-  ambient 0.547059 0.464706 0.164706 1
+  ambient 0.5 0.2 0.07 1
   diffuse 0 0 0 1
   pushTransform
         translate 0 1 0
@@ -61,7 +61,7 @@ translate 0 0 -0.2
   popTransform
 
 # Wall (top, with door opening)
-  ambient 0.547059 0.164706 0.164706 1
+  ambient 0.3 0.4 0.3 1
   diffuse 0 0 0 1
   pushTransform
         translate 0 1.25 1.5
@@ -70,7 +70,7 @@ translate 0 0 -0.2
   popTransform
 
 # Wall (left, with door opening)
-  ambient 0.547059 0.164706 0.164706 1
+  ambient 0.3 0.4 0.3 1
   diffuse 0 0 0 1
   pushTransform
         translate -1.4 1.25 0.5
@@ -79,7 +79,7 @@ translate 0 0 -0.2
   popTransform
 
 # Wall (right, with door opening)
-  ambient 0.547059 0.164706 0.164706 1
+  ambient 0.3 0.4 0.3 1
   diffuse 0 0 0 1
   pushTransform
         translate 1.4 1.25 0.5
