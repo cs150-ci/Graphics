@@ -129,24 +129,44 @@ void keyboard(unsigned char key, int x, int y) {
 void specialKey(int key, int x, int y) {
 	switch(key) {
 	case 100: //left
-          if (transop == view) Transform::left(amount, eye,  up);
+          /*if (transop == view) Transform::left(amount, eye,  up);
           else if (transop == scale) sx -= amount * 0.01 ; 
           else if (transop == translate) tx -= amount * 0.01 ; 
+          */
+          // Moving left = rotating left
+          if (transop == view) {
+            float radians = amount * pi/180 ;
+            eye[0] = eye[0]*cos(radians) - eye[1]*sin(radians) ;
+            eye[1] = eye[1]*cos(radians) + eye[0]*sin(radians) ;
+          }
           break;
 	case 101: //up
-          if (transop == view) Transform::up(amount,  eye,  up);
+          /*if (transop == view) Transform::up(amount,  eye,  up);
           else if (transop == scale) sy += amount * 0.01 ; 
           else if (transop == translate) ty += amount * 0.01 ; 
+          */
+          // Moving up = moving forward
+          if (transop == view) ty -= amount * 0.01 ;
           break;
 	case 102: //right
-          if (transop == view) Transform::left(-amount, eye,  up);
+          /*if (transop == view) Transform::left(-amount, eye,  up);
           else if (transop == scale) sx += amount * 0.01 ; 
           else if (transop == translate) tx += amount * 0.01 ; 
+          */
+          // Moving right = rotating right
+          if (transop == view) {
+            float radians = -amount * pi/180 ;
+            eye[0] = eye[0]*cos(radians) - eye[1]*sin(radians) ;
+            eye[1] = eye[1]*cos(radians) + eye[0]*sin(radians) ;
+          } 
           break;
 	case 103: //down
-          if (transop == view) Transform::up(-amount,  eye,  up);
+          /*if (transop == view) Transform::up(-amount,  eye,  up);
           else if (transop == scale) sy -= amount * 0.01 ; 
           else if (transop == translate) ty -= amount * 0.01 ; 
+          */
+          // Moving down = moving backward
+          if (transop == view) ty += amount * 0.01 ;
           break;
 	}
 	glutPostRedisplay();

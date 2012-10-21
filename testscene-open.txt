@@ -6,7 +6,8 @@
 # Set the scene size and camera location 
 # TODO: better camera placement
 size 1150 750
-camera 0 -5 5 0 0 0 0 1 1 30.0
+camera 0 -6 1.5 0 0 0.5 0 1 1 20.0
+# camera 0 -5 5 0 0 0 0 1 1 30.0
 
 # lights.  A single point and directional light
 # Note that your program must support up to 10 lights
