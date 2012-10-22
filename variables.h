@@ -33,13 +33,13 @@ EXTERN float fovyinit ;
 #endif 
 
 // Mouse movement
-EXTERN int oldx ; 
+EXTERN int oldx ;
 EXTERN int oldy ;
 
 EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user 
 EXTERN GLuint vertexshader, fragmentshader, shaderprogram ; // shaders
 static enum {view, translate, scale} transop ; // which operation to transform 
-enum shape {cube, sphere, teapot} ;
+enum shape {cube, sphere, teapot, castle, sword} ;
 EXTERN float sx, sy ; // the scale in x and y 
 EXTERN float tx, ty ; // the translation in x and y
 
@@ -69,6 +69,7 @@ EXTERN struct object {
   GLfloat specular[4] ;
   GLfloat emission[4] ; 
   GLfloat shininess ;
+  GLfloat texturing ;
   mat4 transform ; 
 } objects[maxobjects] ;
 
@@ -82,4 +83,10 @@ EXTERN GLuint diffusecol ;
 EXTERN GLuint specularcol ; 
 EXTERN GLuint emissioncol ; 
 EXTERN GLuint shininesscol ; 
+
+// Variables to use for texture mapping
+// EXTERN GLubyte texture[256][256][3] ;
+EXTERN GLuint texNames[2] ; // texture buffer
+EXTERN GLuint istex ;  // blend parameter for texturing
+EXTERN GLfloat texturing ;
 
