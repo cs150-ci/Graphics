@@ -63,10 +63,14 @@ void saveScreenshot(string fname) {
 void printHelp() {
   std::cout << "\npress 'h' to print this message again.\n" 
        << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
-	    << "press 'i' to run image grader test cases\n"
             << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"       
             << "press 'r' to reset the transformations.\n"
-            << "press 'v' 't' 's' to do view [default], translate, scale.\n"
+            << "press 'v' 't' to do view [default] and translate.\n"
+            << "press 'i' 'o' to zoom in or out.\n"
+            << "press up down arrow keys to move forward or backward.\n"
+            << "press left right arrow keys to rotate left or right.\n"
+            << "move mouse vertically (up/down) to rotate up or down.\n"
+            << "move mouse horizontally (left/right) to rotate left or right.\n"
             << "press ESC to quit.\n" ;      
 }
 
@@ -82,14 +86,18 @@ void keyboard(unsigned char key, int x, int y) {
 		std::cout << "amount set to " << amount << "\n" ; 
 		break;
 	case 'i':
-		if(allowGrader) {
-			std::cout << "Running tests...\n";
-			grader.runTests();
-			std::cout << "Done! [ESC to quit]\n";
-		} else {
-			std::cout << "Error: no input file specified for grader\n";
-		}
+        // Zoom: change fovy, and change perspective by calling reshape()
+        // Instead of grader, zooms in
+        fovy -= 1 ;
+        reshape(w,h) ;
+        std::cout << "fovy set to " << fovy << "\n" ;
 		break;
+    case 'o':
+        // Zooms out
+        fovy += 1 ;
+        reshape(w,h) ;
+        std::cout << "fovy set to " << fovy << "\n" ;
+        break;
 	case 'g':
 		useGlu = !useGlu;
                 reshape(w,h) ; 
@@ -101,11 +109,13 @@ void keyboard(unsigned char key, int x, int y) {
         case 27:  // Escape to quit
                 exit(0) ;
                 break ;
-        case 'r': // reset eye and up vectors, scale and translate. 
+        case 'r': // reset eye and up vectors, scale and translate, and fovy. 
 		eye = eyeinit ; 
 		up = upinit ; 
                 sx = sy = 1.0 ; 
                 tx = ty = 0.0 ; 
+                fovy = fovyinit ;
+                reshape(w,h) ;
 		break ;   
         case 'v': 
                 transop = view ;
@@ -125,6 +135,7 @@ void keyboard(unsigned char key, int x, int y) {
 
 //  You will need to enter code for the arrow keys 
 //  When an arrow key is pressed, it will call your transform functions
+//  HW4 modification: viewing changed, translation kept
 
 void specialKey(int key, int x, int y) {
 	switch(key) {
@@ -138,7 +149,7 @@ void specialKey(int key, int x, int y) {
             float radians = amount * pi/180 ;
             eye[0] = eye[0]*cos(radians) - eye[1]*sin(radians) ;
             eye[1] = eye[1]*cos(radians) + eye[0]*sin(radians) ;
-          }
+          } else if (transop == translate) tx -= amount * 0.01 ;
           break;
 	case 101: //up
           /*if (transop == view) Transform::up(amount,  eye,  up);
@@ -146,7 +157,9 @@ void specialKey(int key, int x, int y) {
           else if (transop == translate) ty += amount * 0.01 ; 
           */
           // Moving up = moving forward
-          if (transop == view) ty -= amount * 0.01 ;
+          if (transop == view) {
+            eye[1] += amount * 0.01 ;
+          } else if (transop == translate) ty += amount * 0.01 ;
           break;
 	case 102: //right
           /*if (transop == view) Transform::left(-amount, eye,  up);
@@ -155,10 +168,10 @@ void specialKey(int key, int x, int y) {
           */
           // Moving right = rotating right
           if (transop == view) {
-            float radians = -amount * pi/180 ;
-            eye[0] = eye[0]*cos(radians) - eye[1]*sin(radians) ;
-            eye[1] = eye[1]*cos(radians) + eye[0]*sin(radians) ;
-          } 
+            float radians = amount * pi/180 ;
+            eye[0] = eye[0]*cos(-radians) - eye[1]*sin(-radians) ;
+            eye[1] = eye[1]*cos(-radians) + eye[0]*sin(-radians) ;
+          } else if (transop == translate) tx += amount * 0.01 ;
           break;
 	case 103: //down
           /*if (transop == view) Transform::up(-amount,  eye,  up);
@@ -166,10 +179,49 @@ void specialKey(int key, int x, int y) {
           else if (transop == translate) ty -= amount * 0.01 ; 
           */
           // Moving down = moving backward
-          if (transop == view) ty += amount * 0.01 ;
+          if (transop == view) {
+            eye[1] -= amount * 0.01 ;
+          } else if (transop == translate) ty -= amount * 0.01 ;
           break;
 	}
 	glutPostRedisplay();
+}
+
+void drag(int x, int y) {
+    // Change in points
+    int dfx = x-oldx ;
+    int dfy = (h-y)-(h-oldy) ;
+
+    // DEBUG
+    //cout << "dfx: " << dfx << ", dfy: " << dfy << "\n" ;
+
+    // Determine which way/plane to move eye
+    // Mouse drag moves faster than arrow movements, so scale amount by fourth 
+    float radians = amount/4 * pi/180 ;
+    if (dfx >= -5 && dfx <= 5 && dfy > 0) {
+        // Move up along yz plane
+        eye[1] = eye[1]*cos(radians) - eye[2]*sin(radians) ;
+        eye[2] = eye[2]*cos(radians) + eye[1]*sin(radians) ;
+    } else if (dfx >= -5 && dfx <= 5 && dfy <= 0) {
+        // Move down along yz plane
+        eye[1] = eye[1]*cos(-radians) - eye[2]*sin(-radians) ;
+        eye[2] = eye[2]*cos(-radians) + eye[1]*sin(-radians) ;
+    } else if (dfx > 0 && dfy >= -10 && dfy <= 10) {
+        // Move right along xy plane
+        eye[0] = eye[0]*cos(-radians) - eye[1]*sin(-radians) ;
+        eye[1] = eye[1]*cos(-radians) + eye[0]*sin(-radians) ;
+    } else if (dfx < 0 && dfy >= -10 && dfy <= 10) {
+        // Move left along xy plane
+        eye[0] = eye[0]*cos(radians) - eye[1]*sin(radians) ;
+        eye[1] = eye[1]*cos(radians) + eye[0]*sin(radians) ;
+    }
+
+    // Save oldx and oldy and redraw
+    oldx = x ; 
+    oldy = y ;
+
+    glutPostRedisplay();
+
 }
 
 void init() {
@@ -203,6 +255,7 @@ int main(int argc, char* argv[]) {
 	init();
         readfile(argv[1]) ; 
 	glutDisplayFunc(display);
+    glutMotionFunc(drag);
 	glutSpecialFunc(specialKey);
 	glutKeyboardFunc(keyboard);
 	glutReshapeFunc(reshape);
