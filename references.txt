@@ -1,0 +1,5 @@
+(2D) rotating about a point
+http://www.siggraph.org/education/materials/HyperGraph/modeling/mod_tran/2drota.htm
+
+Zoom FAQ
+http://www.opengl.org/archives/resources/faq/technical/viewing.htm
