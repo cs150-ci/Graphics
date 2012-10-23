@@ -40,6 +40,7 @@ void Transform::left(float degrees, vec3& eye, vec3& up) {
   // Construct left rotation matrix about 'up' axis, and rotate 'eye'
   mat3 left_rotate_matrix = Transform::rotate(degrees, up);
   eye = eye * left_rotate_matrix;
+
 }
 
 void Transform::up(float degrees, vec3& eye, vec3& up) {

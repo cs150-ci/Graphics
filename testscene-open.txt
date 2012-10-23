@@ -7,8 +7,8 @@
 # TODO: better camera placement
 size 1150 750
 # camera 0 -5 5 0 0 0 0 1 1 30.0
-# camera 0 -6 1.5 0 0 0.5 0 1 1 20.0
-camera 2 -8 1.5 0 0 0.5 -0.25 1 1 20.0
+camera 0 -6 1.5 0 0 0.5 0 1 1 20.0
+# camera 2 -8 1.5 0 0 0.5 -0.25 1 1 20.0
 
 # lights.  A single point and directional light
 # Note that your program must support up to 10 lights
@@ -150,9 +150,9 @@ translate 0 0 -0.2
 # Sword 1
   diffuse 0.3 0.4 0.3 1
   pushTransform
-        #translate 0 -0.35 -0.58
-        #rotate 1 0 0 -90
-	#scale 0.25 0.25 0.25
+        # translate 0 -0.35 -0.58
+        # rotate 1 0 0 -90
+	    # scale 0.25 0.25 0.25
         translate 1 1.15 0.6
         scale 0.35 0.35 0.35
         sword 1.0
@@ -161,9 +161,9 @@ translate 0 0 -0.2
 # Sword 2
   diffuse 0.3 0.4 0.3 1
   pushTransform
-        #translate 0 -0.35 -0.58
-        #rotate 1 0 0 -90
-        #scale 0.25 0.25 0.25
+        # translate 0 -0.35 -0.58
+        # rotate 1 0 0 -90
+        # scale 0.25 0.25 0.25
         translate -1 1.15 0.6
         scale 0.35 0.35 0.35
         sword 1.0

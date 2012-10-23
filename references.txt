@@ -1,5 +1,9 @@
 (2D) rotating about a point
 http://www.siggraph.org/education/materials/HyperGraph/modeling/mod_tran/2drota.htm
+http://www.alecjacobson.com/weblog/?p=1659
+
+First person camera
+http://www-rohan.sdsu.edu/~stewart/cs583/LearningXNA3_lects/Lect15_Ch11_CreateFirstPersonCamera.html
 
 Zoom FAQ
 http://www.opengl.org/archives/resources/faq/technical/viewing.htm

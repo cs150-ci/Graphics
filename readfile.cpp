@@ -164,7 +164,7 @@ void readfile(const char * filename) {
             eyeinit = vec3(values[0], values[1], values[2]);
             upinit = vec3(values[6], values[7], values[8]);
             upinit = Transform::upvector(upinit, eyeinit);
-            center = vec3(values[3], values[4], values[5]);
+            centerinit = vec3(values[3], values[4], values[5]);
             fovyinit = values[9];
           }
         }
@@ -275,6 +275,7 @@ void readfile(const char * filename) {
 
     eye = eyeinit ; 
 	up = upinit ; 
+    center = centerinit ;
     fovy = fovyinit ; // initial fovy
 	amount = 5;
     sx = sy = 1.0 ; // scales in x and y 

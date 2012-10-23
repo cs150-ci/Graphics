@@ -253,7 +253,7 @@ void printHelp() {
        << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
             << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"       
             << "press 'r' to reset the transformations.\n"
-            << "press 'v' 't' to do view [default] and translate.\n"
+            << "press 'v' 't' 's' to do view [default], translate, and scale.\n"
             << "press up down arrow keys to move forward or backward.\n"
             << "press left right arrow keys to rotate left or right.\n"
             << "move mouse vertically (up/down) to rotate up or down.\n"
@@ -302,6 +302,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 'r': // reset eye and up vectors, scale and translate, and fovy. 
 		eye = eyeinit ; 
 		up = upinit ; 
+        center = centerinit ;
                 sx = sy = 1.0 ; 
                 tx = ty = 0.0 ; 
                 fovy = fovyinit ;
@@ -336,10 +337,17 @@ void specialKey(int key, int x, int y) {
           */
           // Moving left = rotating left
           if (transop == view) {
-            float radians = amount * pi/180 ;
-            eye[0] = eye[0]*cos(radians) - eye[1]*sin(radians) ;
-            eye[1] = eye[1]*cos(radians) + eye[0]*sin(radians) ;
-          } else if (transop == translate) tx -= amount * 0.01 ;
+            float radians = amount/2 * pi/180 ;
+            // Translate eye to origin (same), center by same amount
+            center = center - eye;
+            // Rotate center by amount
+            center[0] = center[0]*cos(radians) - center[1]*sin(radians) ;
+            center[1] = center[1]*cos(radians) + center[0]*sin(radians) ;
+            // Translate eye back (same), center by same amount
+            center = center + eye;
+
+          } else if (transop == scale) sx -= amount * 0.01 ;
+          else if (transop == translate) tx -= amount * 0.01 ;
           break;
 	case 101: //up
           /*if (transop == view) Transform::up(amount,  eye,  up);
@@ -348,8 +356,16 @@ void specialKey(int key, int x, int y) {
           */
           // Moving up = moving forward
           if (transop == view) {
-            eye[1] += amount * 0.01 ;
-          } else if (transop == translate) ty += amount * 0.01 ;
+            // Get change in x/y directions, and normalize by some constant
+            float dx = (center[0] - eye[0])/100 ;
+            float dy = (center[1] - eye[1])/100 ;
+            // Add change to corresponding x/y components to move
+            eye[0] += dx ;
+            eye[1] += dy ;
+            center[0] += dx ;
+            center[1] += dy ;
+          } else if (transop == scale) sy += amount * 0.01 ; 
+          else if (transop == translate) ty += amount * 0.01 ;
           break;
 	case 102: //right
           /*if (transop == view) Transform::left(-amount, eye,  up);
@@ -358,10 +374,16 @@ void specialKey(int key, int x, int y) {
           */
           // Moving right = rotating right
           if (transop == view) {
-            float radians = amount * pi/180 ;
-            eye[0] = eye[0]*cos(-radians) - eye[1]*sin(-radians) ;
-            eye[1] = eye[1]*cos(-radians) + eye[0]*sin(-radians) ;
-          } else if (transop == translate) tx += amount * 0.01 ;
+            float radians = amount/2 * pi/180 ;
+            // Translate eye to origin (same), center by same amount
+            center = center - eye;
+            // Rotate center by amount
+            center[0] = center[0]*cos(-radians) - center[1]*sin(-radians) ;
+            center[1] = center[1]*cos(-radians) + center[0]*sin(-radians) ;
+            // Translate eye back (same), center by same amount
+            center = center + eye;
+          } else if (transop == scale) sx += amount * 0.01 ;
+          else if (transop == translate) tx += amount * 0.01 ;
           break;
 	case 103: //down
           /*if (transop == view) Transform::up(-amount,  eye,  up);
@@ -370,8 +392,16 @@ void specialKey(int key, int x, int y) {
           */
           // Moving down = moving backward
           if (transop == view) {
-            eye[1] -= amount * 0.01 ;
-          } else if (transop == translate) ty -= amount * 0.01 ;
+            // Get change in x/y directions, and normalize by some constant
+            float dx = (center[0] - eye[0])/100 ;
+            float dy = (center[1] - eye[1])/100 ;
+            // Subtract change to corresponding x/y components to move
+            eye[0] -= dx ;
+            eye[1] -= dy ;
+            center[0] -= dx ;
+            center[1] -= dy ;
+          } else if (transop == scale) sy -= amount * 0.01 ;
+          else if (transop == translate) ty -= amount * 0.01 ;
           break;
 	}
 	glutPostRedisplay();
@@ -386,24 +416,44 @@ void drag(int x, int y) {
     //cout << "dfx: " << dfx << ", dfy: " << dfy << "\n" ;
 
     // Determine which way/plane to move eye
-    // Mouse drag moves faster than arrow movements, so scale amount by fourth 
-    float radians = amount/4 * pi/180 ;
-    if (dfx >= -5 && dfx <= 5 && dfy > 0) {
+    // Mouse drag moves faster than arrow movements, so leave amount=0.25
+    float radians = 0.25 * pi/180 ;
+    if (dfx >= -10 && dfx <= 10 && dfy > 0) {
         // Move up along yz plane
-        eye[1] = eye[1]*cos(radians) - eye[2]*sin(radians) ;
-        eye[2] = eye[2]*cos(radians) + eye[1]*sin(radians) ;
+        // Translate eye to origin (same), center by same amount
+        center = center - eye;
+        // Rotate center by amount
+        center[1] = center[1]*cos(radians) - center[2]*sin(radians) ;
+        center[2] = center[2]*cos(radians) + center[1]*sin(radians) ;
+        // Translate eye back (same), center by same amount
+        center = center + eye;
     } else if (dfx >= -5 && dfx <= 5 && dfy <= 0) {
         // Move down along yz plane
-        eye[1] = eye[1]*cos(-radians) - eye[2]*sin(-radians) ;
-        eye[2] = eye[2]*cos(-radians) + eye[1]*sin(-radians) ;
-    } else if (dfx > 0 && dfy >= -10 && dfy <= 10) {
+        // Translate eye to origin (same), center by same amount
+        center = center - eye;
+        // Rotate center by amount
+        center[1] = center[1]*cos(-radians) - center[2]*sin(-radians) ;
+        center[2] = center[2]*cos(-radians) + center[1]*sin(-radians) ;
+        // Translate eye back (same), center by same amount
+        center = center + eye;
+    } else if (dfx > 0 && dfy >= -20 && dfy <= 20) {
         // Move right along xy plane
-        eye[0] = eye[0]*cos(-radians) - eye[1]*sin(-radians) ;
-        eye[1] = eye[1]*cos(-radians) + eye[0]*sin(-radians) ;
-    } else if (dfx < 0 && dfy >= -10 && dfy <= 10) {
+        // Translate eye to origin (same), center by same amount
+        center = center - eye;
+        // Rotate center by amount
+        center[0] = center[0]*cos(-radians) - center[1]*sin(-radians) ;
+        center[1] = center[1]*cos(-radians) + center[0]*sin(-radians) ;
+        // Translate eye back (same), center by same amount
+        center = center + eye;
+    } else if (dfx < 0 && dfy >= -20 && dfy <= 20) {
         // Move left along xy plane
-        eye[0] = eye[0]*cos(radians) - eye[1]*sin(radians) ;
-        eye[1] = eye[1]*cos(radians) + eye[0]*sin(radians) ;
+        // Translate eye to origin (same), center by same amount
+        center = center - eye;
+        // Rotate center by amount
+        center[0] = center[0]*cos(radians) - center[1]*sin(radians) ;
+        center[1] = center[1]*cos(radians) + center[0]*sin(radians) ;
+        // Translate eye back (same), center by same amount
+        center = center + eye;
     }
 
     // Save oldx and oldy and redraw
