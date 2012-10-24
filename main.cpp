@@ -40,30 +40,49 @@ void transformvec (const GLfloat input[4], GLfloat output[4]) {
   }
 }
 
-GLMmodel* pmodel1 = NULL;
+// NOTE: slow when 1+ different obj loaded in scene
+//GLMmodel* pmodel1 = NULL;
+GLMmodel* pmodel1[3] = {NULL}; // Max number of different objects from obj files
+char* pmodel1_filenames[3] = {(char*)""};
 void drawmodel(char* filename, GLuint texid)
 {
   // Load the model only if it hasn't been loaded before
   // If it's been loaded then pmodel1 should be a pointer to the model geometry data...otherwise it's null
-  if (!pmodel1)
+  int pos = -1;
+  for (int i = 0; i < 3; i++) {
+    if (pmodel1_filenames[i] == filename || (pos < 0 && pmodel1_filenames[i] == "")) {
+        pos = i;
+        break;
+    }
+  }
+  //if (!pmodel1)
+  if (pmodel1_filenames[pos] == "") 
   {
     // this is the call that actualy reads the OBJ and creates the model object
-    pmodel1 = glmReadOBJ(filename);
-    if (!pmodel1) exit(0);
+    //pmodel1 = glmReadOBJ(filename);
+    pmodel1[pos] = glmReadOBJ(filename);
+    //if (!pmodel1) exit(0);
+    if (!pmodel1[pos]) exit(0);
     // This will rescale the object to fit into the unity matrix
     // Depending on your project you might want to keep the original size and positions you had in 3DS Max or GMAX so you may have to comment this.
-    glmUnitize(pmodel1);
+    //glmUnitize(pmodel1);
+    glmUnitize(pmodel1[pos]);
     // These 2 functions calculate triangle and vertex normals from the geometry data.
     // To be honest I had some problem with very complex models that didn't look to good because of how vertex normals were calculated
     // So if you can export these directly from you modeling tool do it and comment these line
     // 3DS Max can calculate these for you and GLM is perfectly capable of loading them
-    glmFacetNormals(pmodel1);
-    glmVertexNormals(pmodel1, 90.0);
+    //glmFacetNormals(pmodel1);
+    //glmVertexNormals(pmodel1, 90.0);
+    glmFacetNormals(pmodel1[pos]);
+    glmVertexNormals(pmodel1[pos], 90.0);
   }
   glBindTexture(GL_TEXTURE_2D, texNames[texid]);
   // This is the call that will actually draw the model
   // Don't forget to tell it if you want textures or not :))
-  glmDraw(pmodel1, GLM_SMOOTH| GLM_TEXTURE);
+  //glmDraw(pmodel1, GLM_SMOOTH| GLM_TEXTURE);
+  glmDraw(pmodel1[pos], GLM_SMOOTH| GLM_TEXTURE);
+  // Set pmodel1 to NULL again so other objects can be drawn
+  //pmodel1 = NULL;
 }
 
 void display() {
@@ -174,6 +193,9 @@ void display() {
 	      else if (obj -> type == sword) {
 	        drawmodel((char*)"data/sword.obj", 0) ;
 	      }
+          else if (obj -> type == fly) {
+            drawmodel((char*)"data/Fly.obj", 0) ;
+          }
           else if (obj -> type == table) {
             // Hand draw table vertices/lines/faces + their (face) normals
             vec3 normal, p1, p2, p3;
