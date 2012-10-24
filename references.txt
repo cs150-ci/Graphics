@@ -7,3 +7,7 @@ http://www-rohan.sdsu.edu/~stewart/cs583/LearningXNA3_lects/Lect15_Ch11_CreateFi
 
 Zoom FAQ
 http://www.opengl.org/archives/resources/faq/technical/viewing.htm
+
+Calculating Normals
+http://www.codeguru.com/cpp/g-m/opengl/article.php/c2681/Computing-normals-to-achieve-flat-and-smooth-shading.htm
+http://softsurfer.com/Archive/algorithm_0104/algorithm_0104.htm#Planes

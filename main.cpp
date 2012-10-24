@@ -168,12 +168,199 @@ void display() {
           else if (obj -> type == teapot) {
             glutSolidTeapot(obj->size) ; 
           }
-	  else if (obj -> type == castle) {
-	    drawmodel((char*)"data/castle01.obj", 0) ;
-	  }
-	  else if (obj -> type == sword) {
-	    drawmodel((char*)"data/sword.obj", 0) ;
-	  }
+	      else if (obj -> type == castle) {
+	        drawmodel((char*)"data/castle01.obj", 0) ;
+	      }
+	      else if (obj -> type == sword) {
+	        drawmodel((char*)"data/sword.obj", 0) ;
+	      }
+          else if (obj -> type == table) {
+            // Hand draw table vertices/lines/faces + their (face) normals
+            vec3 normal, p1, p2, p3;
+            glBegin(GL_QUADS);
+                glColor3f(1.0, 1.0, 0.0);
+                // Table top
+                p1 = vec3(-0.25, 5.25, 0.25);
+                p2 = vec3(-0.25, 4.75, 0.25);
+                p3 = vec3(0.25, 4.75, 0.25);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 5.25, 0.25);
+                glVertex3f(-0.25, 4.75, 0.25);
+                glVertex3f(0.25, 4.75, 0.25);
+                glVertex3f(0.25, 5.25, 0.25);
+
+                p1 = vec3(-0.25, 5.25, 0.30);
+                p2 = vec3(-0.25, 4.75, 0.30);
+                p3 = vec3(0.25, 4.75, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 5.25, 0.30);
+                glVertex3f(-0.25, 4.75, 0.30);
+                glVertex3f(0.25, 4.75, 0.30);
+                glVertex3f(0.25, 5.25, 0.30);
+
+                p1 = vec3(-0.25, 5.25, 0.25);
+                p2 = vec3(-0.25, 5.25, 0.30);
+                p3 = vec3(-0.25, 4.75, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]); 
+                glVertex3f(-0.25, 5.25, 0.25);
+                glVertex3f(-0.25, 5.25, 0.30);
+                glVertex3f(-0.25, 4.75, 0.30);
+                glVertex3f(-0.25, 4.75, 0.25);
+
+                p1 = vec3(-0.25, 4.75, 0.25);
+                p2 = vec3(-0.25, 4.75, 0.30);
+                p3 = vec3(0.25, 4.75, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 4.75, 0.25);
+                glVertex3f(-0.25, 4.75, 0.30);
+                glVertex3f(0.25, 4.75, 0.30);
+                glVertex3f(0.25, 4.75, 0.25);
+
+                p1 = vec3(0.25, 4.75, 0.25);
+                p2 = vec3(0.25, 4.75, 0.30);
+                p3 = vec3(0.25, 5.25, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 4.75, 0.25);
+                glVertex3f(0.25, 4.75, 0.30);
+                glVertex3f(0.25, 5.25, 0.30);
+                glVertex3f(0.25, 5.25, 0.25);
+
+                p1 = vec3(0.25, 5.25, 0.25);
+                p2 = vec3(0.25, 5.25, 0.30);
+                p3 = vec3(-0.25, 5.25, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 5.25, 0.25);
+                glVertex3f(0.25, 5.25, 0.30);
+                glVertex3f(-0.25, 5.25, 0.30);
+                glVertex3f(-0.25, 5.25, 0.25);
+                // Table leg 1
+                p1 = vec3(-0.25, 4.75, 0.25);
+                p2 = vec3(-0.25, 4.75, 0.10);
+                p3 = vec3(-0.25, 4.80, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 4.75, 0.25);
+                glVertex3f(-0.25, 4.75, 0.10);
+                glVertex3f(-0.25, 4.80, 0.10);
+                glVertex3f(-0.25, 4.80, 0.25);
+
+                p1 = vec3(-0.25, 4.75, 0.25);
+                p2 = vec3(-0.25, 4.75, 0.10);
+                p3 = vec3(-0.20, 4.75, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 4.75, 0.25);
+                glVertex3f(-0.25, 4.75, 0.10);
+                glVertex3f(-0.20, 4.75, 0.10);
+                glVertex3f(-0.20, 4.75, 0.25);
+
+                p1 = vec3(-0.20, 4.75, 0.25);
+                p2 = vec3(-0.20, 4.75, 0.10);
+                p3 = vec3(-0.25, 4.80, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.20, 4.75, 0.25);
+                glVertex3f(-0.20, 4.75, 0.10);
+                glVertex3f(-0.25, 4.80, 0.10);
+                glVertex3f(-0.25, 4.80, 0.25);
+                // Table leg 2
+                p1 = vec3(-0.25, 5.25, 0.25);
+                p2 = vec3(-0.25, 5.25, 0.10);
+                p3 = vec3(-0.25, 5.20, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 5.25, 0.25);
+                glVertex3f(-0.25, 5.25, 0.10);
+                glVertex3f(-0.25, 5.20, 0.10);
+                glVertex3f(-0.25, 5.20, 0.25);
+
+                p1 = vec3(-0.25, 5.25, 0.25);
+                p2 = vec3(-0.25, 5.25, 0.10);
+                p3 = vec3(-0.20, 5.25, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 5.25, 0.25);
+                glVertex3f(-0.25, 5.25, 0.10);
+                glVertex3f(-0.20, 5.25, 0.10);
+                glVertex3f(-0.20, 5.25, 0.25);
+
+                p1 = vec3(-0.20, 5.25, 0.25);
+                p2 = vec3(-0.20, 5.25, 0.10);
+                p3 = vec3(-0.25, 5.20, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.20, 5.25, 0.25);
+                glVertex3f(-0.20, 5.25, 0.10);
+                glVertex3f(-0.25, 5.20, 0.10);
+                glVertex3f(-0.25, 5.20, 0.25);
+                // Table leg 3
+                p1 = vec3(0.25, 4.75, 0.25);
+                p2 = vec3(0.25, 4.75, 0.10);
+                p3 = vec3(0.25, 4.80, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 4.75, 0.25);
+                glVertex3f(0.25, 4.75, 0.10);
+                glVertex3f(0.25, 4.80, 0.10);
+                glVertex3f(0.25, 4.80, 0.25);
+
+                p1 = vec3(0.25, 4.75, 0.25);
+                p2 = vec3(0.25, 4.75, 0.10);
+                p3 = vec3(0.20, 4.75, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 4.75, 0.25);
+                glVertex3f(0.25, 4.75, 0.10);
+                glVertex3f(0.20, 4.75, 0.10);
+                glVertex3f(0.20, 4.75, 0.25);
+
+                p1 = vec3(0.20, 4.75, 0.25);
+                p2 = vec3(0.20, 4.75, 0.10);
+                p3 = vec3(0.25, 4.80, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.20, 4.75, 0.25);
+                glVertex3f(0.20, 4.75, 0.10);
+                glVertex3f(0.25, 4.80, 0.10);
+                glVertex3f(0.25, 4.80, 0.25);
+                // Table leg 4
+                p1 = vec3(0.25, 5.25, 0.25);
+                p2 = vec3(0.25, 5.25, 0.10);
+                p3 = vec3(0.25, 5.20, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 5.25, 0.25);
+                glVertex3f(0.25, 5.25, 0.10);
+                glVertex3f(0.25, 5.20, 0.10);
+                glVertex3f(0.25, 5.20, 0.25);
+
+                p1 = vec3(0.25, 5.25, 0.25);
+                p2 = vec3(0.25, 5.25, 0.10);
+                p3 = vec3(0.20, 5.25, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 5.25, 0.25);
+                glVertex3f(0.25, 5.25, 0.10);
+                glVertex3f(0.20, 5.25, 0.10);
+                glVertex3f(0.20, 5.25, 0.25);
+
+                p1 = vec3(0.20, 5.25, 0.25);
+                p2 = vec3(0.20, 5.25, 0.10);
+                p3 = vec3(0.25, 5.20, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.20, 5.25, 0.25);
+                glVertex3f(0.20, 5.25, 0.10);
+                glVertex3f(0.25, 5.20, 0.10);
+                glVertex3f(0.25, 5.20, 0.25);
+            glEnd(); 
+          }
         }
     
         glutSwapBuffers();
@@ -253,7 +440,7 @@ void printHelp() {
        << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
             << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"       
             << "press 'r' to reset the transformations.\n"
-            << "press 'v' 't' 's' to do view [default], translate, and scale.\n"
+            << "press 'v' 't' 's' 'q' to do view [default], translate, scale, oldview [crystal ball interface].\n"
             << "press up down arrow keys to move forward or backward.\n"
             << "press left right arrow keys to rotate left or right.\n"
             << "move mouse vertically (up/down) to rotate up or down.\n"
@@ -320,6 +507,10 @@ void keyboard(unsigned char key, int x, int y) {
                 transop = scale ; 
                 std::cout << "Operation is set to Scale\n" ; 
                 break ; 
+        case 'q':
+                transop = oldview ;
+                std::cout << "Operation is set to OldView (crystal ball interface)\n" ;
+                break;
         }
 	glutPostRedisplay();
 }
@@ -348,6 +539,7 @@ void specialKey(int key, int x, int y) {
 
           } else if (transop == scale) sx -= amount * 0.01 ;
           else if (transop == translate) tx -= amount * 0.01 ;
+          else if (transop == oldview) Transform::left(amount, eye, up);
           break;
 	case 101: //up
           /*if (transop == view) Transform::up(amount,  eye,  up);
@@ -366,6 +558,7 @@ void specialKey(int key, int x, int y) {
             center[1] += dy ;
           } else if (transop == scale) sy += amount * 0.01 ; 
           else if (transop == translate) ty += amount * 0.01 ;
+          else if (transop == oldview) Transform::up(amount,  eye,  up);
           break;
 	case 102: //right
           /*if (transop == view) Transform::left(-amount, eye,  up);
@@ -384,6 +577,7 @@ void specialKey(int key, int x, int y) {
             center = center + eye;
           } else if (transop == scale) sx += amount * 0.01 ;
           else if (transop == translate) tx += amount * 0.01 ;
+          else if (transop == oldview) Transform::left(-amount, eye,  up);
           break;
 	case 103: //down
           /*if (transop == view) Transform::up(-amount,  eye,  up);
@@ -402,6 +596,7 @@ void specialKey(int key, int x, int y) {
             center[1] -= dy ;
           } else if (transop == scale) sy -= amount * 0.01 ;
           else if (transop == translate) ty -= amount * 0.01 ;
+          else if (transop == oldview) Transform::up(-amount,  eye,  up);
           break;
 	}
 	glutPostRedisplay();
