@@ -96,7 +96,7 @@ GLfloat rotateamt = 135.0;
 void display() {
 	glClearColor(0, 0, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
     // I'm including the basic matrix setup for model view to 
     // give some sense of how this works.  
 
