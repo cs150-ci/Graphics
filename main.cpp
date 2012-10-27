@@ -85,6 +85,14 @@ void drawmodel(char* filename, GLuint texid)
   //pmodel1 = NULL;
 }
 
+// Fly location and rotation amounts
+GLfloat flyx = 0.0;
+GLfloat flyy = 0.0;
+GLfloat flyz = 0.0;
+GLint movefwd = 1;
+GLint moveright = 1;
+GLint moveup = 1;
+GLfloat rotateamt = 135.0;
 void display() {
 	glClearColor(0, 0, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -194,6 +202,12 @@ void display() {
 	        drawmodel((char*)"data/sword.obj", 0) ;
 	      }
           else if (obj -> type == fly) {
+            // Apply transformations here using gl functions (not including push/pop transforms)
+            glTranslatef(flyx, flyy, flyz) ;
+            glTranslatef(-2.0, 5.0, 1.0) ;
+            glRotatef(rotateamt, 0, 0, 1) ;
+            glRotatef(90.0, 1, 0, 0) ;
+            glScalef(0.05, 0.05, 0.05) ;
             drawmodel((char*)"data/Fly.obj", 0) ;
           }
           else if (obj -> type == table) {
@@ -386,6 +400,7 @@ void display() {
         }
     
         glutSwapBuffers();
+        glFlush(); 
 }
 
 /*
@@ -423,6 +438,21 @@ void load_obj(const char* filename, vector<glm::vec4> &vertices, vector<glm::vec
   }
 }
 */
+
+// Fly animation method
+void moveFly(void) {
+    //if (moveright) flyx += 0.025 ;
+    //else flyx -= 0.025 ;
+    if (movefwd) flyy += 0.025 ;
+    else flyy -= 0.025 ;
+    if (flyy > 1 || flyy < 0) {
+        movefwd = !movefwd ;
+        if (flyy > 1) rotateamt = 315.0 ;
+        else if (flyy < 0) rotateamt = 135.0 ;
+    }
+    //if (flyx > 0.5 || flyx < -0.5) moveright = !moveright ;
+    glutPostRedisplay() ;
+}
 
 // Uses the Projection matrices (technically deprecated) to set perspective 
 // We could also do this in a more modern fashion with glm.  
@@ -462,6 +492,7 @@ void printHelp() {
        << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
             << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"       
             << "press 'r' to reset the transformations.\n"
+            << "press 'p' to stop/start fly animation.\n"
             << "press 'v' 't' 's' 'q' to do view [default], translate, scale, oldview [crystal ball interface].\n"
             << "press up down arrow keys to move forward or backward.\n"
             << "press left right arrow keys to rotate left or right.\n"
@@ -470,7 +501,7 @@ void printHelp() {
             << "press ESC to quit.\n" ;      
 }
 
-
+int isAnimate = 1; // Animation flag
 void keyboard(unsigned char key, int x, int y) {
 	switch(key) {
 	case '+':
@@ -533,6 +564,12 @@ void keyboard(unsigned char key, int x, int y) {
                 transop = oldview ;
                 std::cout << "Operation is set to OldView (crystal ball interface)\n" ;
                 break;
+        case 'p':
+                // As in hw0
+                isAnimate = !isAnimate ;
+                if (isAnimate) glutIdleFunc(moveFly);
+                else glutIdleFunc(NULL);
+                break;
         }
 	glutPostRedisplay();
 }
@@ -571,8 +608,8 @@ void specialKey(int key, int x, int y) {
           // Moving up = moving forward
           if (transop == view) {
             // Get change in x/y directions, and normalize by some constant
-            float dx = (center[0] - eye[0])/100 ;
-            float dy = (center[1] - eye[1])/100 ;
+            float dx = (center[0] - eye[0])/80 ;
+            float dy = (center[1] - eye[1])/80 ;
             // Add change to corresponding x/y components to move
             eye[0] += dx ;
             eye[1] += dy ;
@@ -609,8 +646,8 @@ void specialKey(int key, int x, int y) {
           // Moving down = moving backward
           if (transop == view) {
             // Get change in x/y directions, and normalize by some constant
-            float dx = (center[0] - eye[0])/100 ;
-            float dy = (center[1] - eye[1])/100 ;
+            float dx = (center[0] - eye[0])/80 ;
+            float dy = (center[1] - eye[1])/80 ;
             // Subtract change to corresponding x/y components to move
             eye[0] -= dx ;
             eye[1] -= dy ;
@@ -622,6 +659,7 @@ void specialKey(int key, int x, int y) {
           break;
 	}
 	glutPostRedisplay();
+    glFlush();
 }
 
 void drag(int x, int y) {
@@ -739,6 +777,7 @@ int main(int argc, char* argv[]) {
 	glutKeyboardFunc(keyboard);
 	glutReshapeFunc(reshape);
 	glutReshapeWindow(w, h);
+    glutIdleFunc(moveFly); // Animate from program execution
 
 	printHelp();
 	glutMainLoop();
