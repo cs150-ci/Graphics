@@ -60,10 +60,9 @@ void drawmodel(char* filename, GLuint texid)
     glmFacetNormals(pmodel1);
     glmVertexNormals(pmodel1, 90.0);
   }
-  glBindTexture(GL_TEXTURE_2D, texNames[texid]);
   // This is the call that will actually draw the model
   // Don't forget to tell it if you want textures or not :))
-  glmDraw(pmodel1, GLM_SMOOTH| GLM_TEXTURE);
+  glmDraw(pmodel1, GLM_SMOOTH | GLM_TEXTURE);
 }
 
 void display() {
@@ -152,68 +151,43 @@ void display() {
           glUniform4fv(emissioncol,1,obj->emission);
           glUniform1f(shininesscol,obj->shininess);
 
-	  //Setup textures
-    	  glUniform1i(istex, (int)obj->texturing) ;
-    	  glBindTexture(GL_TEXTURE_2D, texNames[(int)(obj->texturing-1)]) ;
+          //Setup textures
+          glUniform1i(istex, (int)obj->texturing) ;
+          glBindTexture(GL_TEXTURE_2D, texNames[(int)(obj->texturing-1)]) ;
 
           // Actually draw the object
           // We provide the actual glut drawing functions for you.  
           if (obj -> type == cube) {
-            glutSolidCube(obj->size) ; 
+            if (wired) glutSolidCube(obj->size) ; 
+            else glutSolidCube(obj->size) ; 
           }
           else if (obj -> type == sphere) {
             const int tessel = 20 ; 
-            glutSolidSphere(obj->size, tessel, tessel) ; 
+            if (wired) glutSolidSphere(obj->size, tessel, tessel) ; 
+            else glutSolidSphere(obj->size, tessel, tessel) ; 
           }
           else if (obj -> type == teapot) {
-            glutSolidTeapot(obj->size) ; 
+            if (wired) glutWireTeapot(obj->size) ;
+            else glutSolidTeapot(obj->size) ; 
           }
-	  else if (obj -> type == castle) {
-	    drawmodel("data/castle01.obj", 0) ;
-	  }
-	  else if (obj -> type == sword) {
-	    drawmodel("data/sword.obj", 0) ;
-	  }
+          else if (obj -> type == castle) {
+            drawmodel("data/saint-riquier_obj/saintriqT3DS.obj", (GLuint)obj->size) ;
+          }
+          else if (obj -> type == sword) {
+            drawmodel("data/sword.obj", (GLuint)obj->size) ;
+          }
+          else if (obj -> type == tapestry) {
+            glBegin(GL_QUADS) ;
+            glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1*obj->size, 0.0) ;
+            glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, obj->size, 0.0) ;
+            glTexCoord2f(1.0, 1.0); glVertex3f(1.0, obj->size, 0.0) ;
+            glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1*obj->size, 0.0) ;
+            glEnd() ;
+          }
         }
     
         glutSwapBuffers();
 }
-
-/*
-void load_obj(const char* filename, vector<glm::vec4> &vertices, vector<glm::vec3> &normals, vector<GLushort> &elements) {
-  ifstream in(filename, ios::in);
-  if (!in) { cerr << "Cannot open " << filename << endl; exit(1); }
- 
-  string line;
-  while (getline(in, line)) {
-    printf("%c",line[0]);
-    if (line.substr(0,2) == "v ") {
-      istringstream s(line.substr(2));
-      glm::vec4 v; s >> v.x; s >> v.y; s >> v.z; v.w = 1.0f;
-      vertices.push_back(v);
-    }  else if (line.substr(0,2) == "f ") {
-      istringstream s(line.substr(2));
-      GLushort a,b,c;
-      s >> a; s >> b; s >> c;
-      a--; b--; c--;
-      elements.push_back(a); elements.push_back(b); elements.push_back(c);
-    }
-    else if (line[0] == '#') { }
-    else { }
-  }
- 
-  //normals.resize(mesh->vertices.size(), glm::vec3(0.0, 0.0, 0.0));
-  for (int i = 0; i < elements.size(); i+=3) {
-    GLushort ia = elements[i];
-    GLushort ib = elements[i+1];
-    GLushort ic = elements[i+2];
-    glm::vec3 normal = glm::normalize(glm::cross(
-      glm::vec3(vertices[ib]) - glm::vec3(vertices[ia]),
-      glm::vec3(vertices[ic]) - glm::vec3(vertices[ia])));
-    normals[ia] = normals[ib] = normals[ic] = normal;
-  }
-}
-*/
 
 // Uses the Projection matrices (technically deprecated) to set perspective 
 // We could also do this in a more modern fashion with glm.  
@@ -247,16 +221,14 @@ void saveScreenshot(string fname) {
 	FreeImage_Save(FIF_PNG, img, fname.c_str(), 0);
 }
 
-
 void printHelp() {
   std::cout << "\npress 'h' to print this message again.\n" 
-       << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
+            << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
             << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"       
             << "press 'r' to reset the transformations.\n"
             << "press 'v' 't' 's' to do view [default], translate, scale.\n"
             << "press ESC to quit.\n" ;      
 }
-
 
 void keyboard(unsigned char key, int x, int y) {
 	switch(key) {
@@ -268,8 +240,19 @@ void keyboard(unsigned char key, int x, int y) {
 		amount--;
 		std::cout << "amount set to " << amount << "\n" ; 
 		break;
-	case 'i':
-		break;
+        case 'i':
+        // Zoom: change fovy, and change perspective by calling reshape()
+        // Instead of grader, zooms in
+                fovy -= 1 ;
+                reshape(w,h) ;
+                std::cout << "fovy set to " << fovy << "\n" ;
+                break;
+        case 'o':
+        // Zooms out
+                fovy += 1 ;
+                reshape(w,h) ;
+                std::cout << "fovy set to " << fovy << "\n" ;
+                break;
 	case 'g':
 		useGlu = !useGlu;
                 reshape(w,h) ; 
@@ -281,7 +264,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 27:  // Escape to quit
                 exit(0) ;
                 break ;
-	case 'c': // Screenshot
+        case 'c': // Screenshot
 		saveScreenshot("screenshot.png");
 		break;
         case 'r': // reset eye and up vectors, scale and translate. 
@@ -302,6 +285,13 @@ void keyboard(unsigned char key, int x, int y) {
                 transop = scale ; 
                 std::cout << "Operation is set to Scale\n" ; 
                 break ; 
+        case 'q':
+                transop = oldview ;
+                std::cout << "Operation is set to OldView (crystal ball interface)\n" ;
+                break;
+        case 'w': // Toggle wireframe
+                wired = !wired ;
+                break ;
         }
 	glutPostRedisplay();
 }
@@ -311,28 +301,69 @@ void keyboard(unsigned char key, int x, int y) {
 
 void specialKey(int key, int x, int y) {
 	switch(key) {
-	case 100: //left
-          if (transop == view) Transform::left(amount, eye,  up);
-          else if (transop == scale) sx -= amount * 0.01 ; 
-          else if (transop == translate) tx -= amount * 0.01 ; 
+        case 100: //left
+          // Moving left = rotating left
+          if (transop == view) {
+            float radians = amount/2 * pi/180 ;
+            // Translate eye to origin (same), center by same amount
+            center = center - eye;
+            // Rotate center by amount
+            center[0] = center[0]*cos(radians) - center[1]*sin(radians) ;
+            center[1] = center[1]*cos(radians) + center[0]*sin(radians) ;
+            // Translate eye back (same), center by same amount
+            center = center + eye;
+
+          } else if (transop == scale) sx -= amount * 0.01 ;
+          else if (transop == translate) tx -= amount * 0.01 ;
+          else if (transop == oldview) Transform::left(amount, eye, up);
           break;
-	case 101: //up
-          if (transop == view) Transform::up(amount,  eye,  up);
-          else if (transop == scale) sy += amount * 0.01 ; 
-          else if (transop == translate) ty += amount * 0.01 ; 
+        case 101: //up
+          // Moving up = moving forward
+          if (transop == view) {
+            // Get change in x/y directions, and normalize by some constant
+            float dx = (center[0] - eye[0])/100 ;
+            float dy = (center[1] - eye[1])/100 ;
+            // Add change to corresponding x/y components to move
+            eye[0] += dx ;
+            eye[1] += dy ;
+            center[0] += dx ;
+            center[1] += dy ;
+          } else if (transop == scale) sy += amount * 0.01 ;
+          else if (transop == translate) ty += amount * 0.01 ;
+          else if (transop == oldview) Transform::up(amount, eye, up);
           break;
-	case 102: //right
-          if (transop == view) Transform::left(-amount, eye,  up);
-          else if (transop == scale) sx += amount * 0.01 ; 
-          else if (transop == translate) tx += amount * 0.01 ; 
+        case 102: //right
+          // Moving right = rotating right
+          if (transop == view) {
+            float radians = amount/2 * pi/180 ;
+            // Translate eye to origin (same), center by same amount
+            center = center - eye;
+            // Rotate center by amount
+            center[0] = center[0]*cos(-radians) - center[1]*sin(-radians) ;
+            center[1] = center[1]*cos(-radians) + center[0]*sin(-radians) ;
+            // Translate eye back (same), center by same amount
+            center = center + eye;
+          } else if (transop == scale) sx += amount * 0.01 ;
+          else if (transop == translate) tx += amount * 0.01 ;
+          else if (transop == oldview) Transform::left(-amount, eye, up);
           break;
-	case 103: //down
-          if (transop == view) Transform::up(-amount,  eye,  up);
-          else if (transop == scale) sy -= amount * 0.01 ; 
-          else if (transop == translate) ty -= amount * 0.01 ; 
+        case 103: //down
+          // Moving down = moving backward
+          if (transop == view) {
+            // Get change in x/y directions, and normalize by some constant
+            float dx = (center[0] - eye[0])/100 ;
+            float dy = (center[1] - eye[1])/100 ;
+            // Subtract change to corresponding x/y components to move
+            eye[0] -= dx ;
+            eye[1] -= dy ;
+            center[0] -= dx ;
+            center[1] -= dy ;
+          } else if (transop == scale) sy -= amount * 0.01 ;
+          else if (transop == translate) ty -= amount * 0.01 ;
+          else if (transop == oldview) Transform::up(-amount, eye, up);
           break;
-	}
-	glutPostRedisplay();
+        }
+        glutPostRedisplay();
 }
 
 void init() {
@@ -350,28 +381,18 @@ void init() {
       emissioncol = glGetUniformLocation(shaderprogram,"emission") ;       
       shininesscol = glGetUniformLocation(shaderprogram,"shininess") ;       
 
-	//glGenBuffers(numperobj*numobjects+ncolors+1, buffers) ; // 1 for texcoords 
-	//initcolorscube() ; 
+      // Initialize textures
+      LoadTexture("data/wood.tga", 0) ;
+      LoadTexture("data/stone.tga", 1) ;
+      LoadTexture("data/sky.tga", 2) ;
+      LoadTexture("data/grass.tga", 3) ;
+      LoadTexture("data/tree_of_life.tga", 4) ;
+      LoadTexture("data/ArrasWawel.tga", 5) ;
+      istex = glGetUniformLocation(shaderprogram,"istex") ; 
 
-	// Initialize texture
-	// inittexture("wood.ppm", fragmentprogram) ; 
-	//inittexture("data/stone.ppm", shaderprogram, 1) ;
-        //inittexture("data/wood.ppm", shaderprogram, 0) ;
-	LoadTexture("data/textura_paralelipied.tga", 0) ;
-        // Define a sampler.  See page 709 in red book, 7th ed.
-        GLint texsampler ; 
-        texsampler = glGetUniformLocation(shaderprogram, "tex") ; 
-        glUniform1i(texsampler, 0) ; // Could also be GL_TEXTURE0 
-        istex = glGetUniformLocation(shaderprogram,"istex") ; 
-
-	// Initialize objects
-	//initobject(FLOOR, (GLfloat *) floorverts, sizeof(floorverts), (GLfloat *) floorcol, sizeof(floorcol), (GLubyte *) floorinds, sizeof(floorinds), GL_POLYGON) ; 
-	//       initobject(CUBE, (GLfloat *) cubeverts, sizeof(cubeverts), (GLfloat *) cubecol, sizeof (cubecol), (GLubyte *) cubeinds, sizeof (cubeinds), GL_QUADS) ; 
-	//initobjectnocol(CUBE, (GLfloat *) cubeverts, sizeof(cubeverts), (GLubyte *) cubeinds, sizeof(cubeinds), GL_QUADS) ; 
-
-	// Enable the depth test
-	glEnable(GL_DEPTH_TEST) ;
-	glDepthFunc (GL_LESS) ; // The default option
+      // Enable the depth test
+      glEnable(GL_DEPTH_TEST) ;
+      glDepthFunc (GL_LESS) ; // The default option
 }
 
 int main(int argc, char* argv[]) {
@@ -398,3 +419,4 @@ int main(int argc, char* argv[]) {
 	FreeImage_DeInitialise();
 	return 0;
 }
+

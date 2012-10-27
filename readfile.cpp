@@ -171,7 +171,7 @@ void readfile(const char * filename) {
 
         // I've left the code for loading objects in the skeleton, so 
         // you can get a sense of how this works.  
-        else if (cmd == "sphere" || cmd == "cube" || cmd == "teapot" || cmd == "castle" || cmd == "sword") {
+        else if (cmd == "sphere" || cmd == "cube" || cmd == "teapot" || cmd == "castle" || cmd == "sword" || cmd == "tapestry") {
           if (numobjects == maxobjects) // No more objects 
             cerr << "Reached Maximum Number of Objects " << numobjects << " Will ignore further objects\n" ; 
           else {
@@ -183,16 +183,17 @@ void readfile(const char * filename) {
                 (obj -> ambient)[i] = ambient[i] ; 
                 (obj -> diffuse)[i] = diffuse[i] ; 
                 (obj -> specular)[i] = specular[i] ; 
-                (obj -> emission)[i] = emission[i] ;
+                (obj -> emission)[i] = emission[i] ; 
               }
               obj -> shininess = shininess ; 
-	      obj -> texturing = texturing ;
+              obj -> texturing = texturing ; 
               obj -> transform = transfstack.top() ; 
               if (cmd == "sphere") obj -> type = sphere ; 
               else if (cmd == "cube") obj -> type = cube ; 
               else if (cmd == "teapot") obj -> type = teapot ; 
-              else if (cmd == "castle") obj -> type = castle ;
-              else if (cmd == "sword") obj -> type = sword ;
+              else if (cmd == "castle") obj -> type = castle ; 
+              else if (cmd == "sword") obj -> type = sword ; 
+              else if (cmd == "tapestry") obj -> type = tapestry ; 
             }
             ++numobjects ; 
           }

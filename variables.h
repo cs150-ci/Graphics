@@ -33,8 +33,8 @@ EXTERN float fovy ;
 
 EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user 
 EXTERN GLuint vertexshader, fragmentshader, shaderprogram ; // shaders
-static enum {view, translate, scale} transop ; // which operation to transform 
-enum shape {cube, sphere, teapot, castle, sword} ;
+static enum {view, translate, scale, oldview} transop ; // which operation to transform 
+enum shape {cube, sphere, teapot, castle, sword, tapestry} ;
 EXTERN float sx, sy ; // the scale in x and y 
 EXTERN float tx, ty ; // the translation in x and y
 
@@ -54,7 +54,7 @@ EXTERN GLfloat emission[4] ;
 EXTERN GLfloat shininess ; 
 
 // For multiple objects, read from a file.  
-const int maxobjects = 50 ; 
+const int maxobjects = 100 ; 
 EXTERN int numobjects ; 
 EXTERN struct object {
   shape type ; 
@@ -81,7 +81,8 @@ EXTERN GLuint shininesscol ;
 
 // Variables to use for texture mapping
 // EXTERN GLubyte texture[256][256][3] ;
-EXTERN GLuint texNames[2] ; // texture buffer
-EXTERN GLuint istex ;  // blend parameter for texturing
-EXTERN GLfloat texturing ;
+EXTERN GLuint texNames[10] ; // texture buffer
+EXTERN GLuint istex ;  // texture variable passed to shaders
+EXTERN GLfloat texturing ; // global texture value
+EXTERN bool wired ; // toggle wireframe mode
 

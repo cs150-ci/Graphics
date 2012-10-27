@@ -83,14 +83,14 @@ void initobject(GLuint object, GLfloat * vert, GLint sizevert, GLfloat * col, GL
 
 // Very basic code to read a ppm file
 // And then set up buffers for texture coordinates
-void inittexture (const char * filename, GLuint program, GLint texid) {
+void inittexture (const char * filename, GLint texid, GLint height, GLint width) {
 	int i,j,k ;
 	FILE * fp ; 
 	GLint err ; 
 	assert(fp = fopen(filename,"rb")) ;
 	fscanf(fp,"%*s %*d %*d %*d%*c") ;
-	for (i = 0 ; i < 256 ; i++)
-		for (j = 0 ; j < 256 ; j++)
+	for (i = 0 ; i < width ; i++)
+		for (j = 0 ; j < height ; j++)
 			for (k = 0 ; k < 3 ; k++)
 				fscanf(fp,"%c",&(texture[i][j][k])) ;
 	fclose(fp) ;  
@@ -104,7 +104,7 @@ void inittexture (const char * filename, GLuint program, GLint texid) {
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY) ; 
 
 	glBindTexture (GL_TEXTURE_2D, texNames[texid]) ; 
-	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, texture) ;
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture) ;
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) ; 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) ; 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT) ;

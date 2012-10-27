@@ -30,7 +30,4 @@ Texture.o: Texture.cpp Texture.h glm.h variables.h
 glm.o: glm.cpp glm.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c glm.cpp
 clean: 
-	$(RM) *.o transforms *.png
-
-
- 
+	$(RM) *.o transforms *~

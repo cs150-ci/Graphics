@@ -30,8 +30,7 @@ bool LoadTexture(char * filename, GLuint texid)
 		// This call will actualy load the image data into OpenGL and your video card's memory. The texture is allways loaded into the current texture
 		// you have selected with the last glBindTexture call
 		// It asks for the width, height, type of image (determins the format of the data you are giveing to it) and the pointer to the actual data
-		glTexImage2D(GL_TEXTURE_2D, 0, teximg.bpp / 8, teximg.width, teximg.height, 0, teximg.type, GL_UNSIGNED_BYTE, teximg.imageData);
-
+		glTexImage2D(GL_TEXTURE_2D, 0, teximg.bpp/8, teximg.width, teximg.height, 0, teximg.type, GL_UNSIGNED_BYTE, teximg.imageData);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 		glEnable(GL_TEXTURE_2D);
@@ -146,8 +145,11 @@ bool LoadUncompressedTGA(Texture * texture, char * filename, FILE * fTGA)	// Loa
 	// Byte Swapping Optimized By Steve Thomas
 	for(GLuint cswap = 0; cswap < (int)tga.imageSize; cswap += tga.bytesPerPixel)
 	{
-		texture->imageData[cswap] ^= texture->imageData[cswap+2] ^=
-		texture->imageData[cswap] ^= texture->imageData[cswap+2];
+		//texture->imageData[cswap] ^= texture->imageData[cswap+2] ^=
+		//texture->imageData[cswap] ^= texture->imageData[cswap+2];
+                texture->imageData[cswap] ^= texture->imageData[cswap+2];
+                texture->imageData[cswap+2] ^= texture->imageData[cswap];
+                texture->imageData[cswap] ^= texture->imageData[cswap+2];
 	}
 
 	fclose(fTGA);															// Close file
