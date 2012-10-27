@@ -164,14 +164,14 @@ void readfile(const char * filename) {
             eyeinit = vec3(values[0], values[1], values[2]);
             upinit = vec3(values[6], values[7], values[8]);
             upinit = Transform::upvector(upinit, eyeinit);
-            center = vec3(values[3], values[4], values[5]);
-            fovy = values[9];
+            centerinit = vec3(values[3], values[4], values[5]);
+            fovyinit = values[9];
           }
         }
 
         // I've left the code for loading objects in the skeleton, so 
         // you can get a sense of how this works.  
-        else if (cmd == "sphere" || cmd == "cube" || cmd == "teapot" || cmd == "castle" || cmd == "sword" || cmd == "tapestry") {
+        else if (cmd == "sphere" || cmd == "cube" || cmd == "teapot" || cmd == "castle" || cmd == "sword" || cmd == "shield" || cmd == "tapestry" || cmd == "table" || cmd == "fly") {
           if (numobjects == maxobjects) // No more objects 
             cerr << "Reached Maximum Number of Objects " << numobjects << " Will ignore further objects\n" ; 
           else {
@@ -193,7 +193,10 @@ void readfile(const char * filename) {
               else if (cmd == "teapot") obj -> type = teapot ; 
               else if (cmd == "castle") obj -> type = castle ; 
               else if (cmd == "sword") obj -> type = sword ; 
+              else if (cmd == "shield") obj -> type = shield ; 
               else if (cmd == "tapestry") obj -> type = tapestry ; 
+              else if (cmd == "table") obj -> type = table ;
+              else if (cmd == "fly") obj -> type = fly ;
             }
             ++numobjects ; 
           }
@@ -274,14 +277,16 @@ void readfile(const char * filename) {
   // Set up initial position for eye, up and amount
   // As well as booleans 
 
-    eye = eyeinit ; 
-	up = upinit ; 
-	amount = 5;
-    sx = sy = 1.0 ; // scales in x and y 
-    tx = ty = 0.0 ; // translation in x and y  
-	useGlu = false; // don't use the glu perspective/lookat fns
+    eye = eyeinit ;
+    up = upinit ;
+    center = centerinit ;
+    fovy = fovyinit ; // initial fovy
+    amount = 5;
+    sx = sy = 1.0 ; // scales in x and y
+    tx = ty = 0.0 ; // translation in x and y
+    useGlu = false; // don't use the glu perspective/lookat fns
 
-	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 
   }
   else {

@@ -40,31 +40,47 @@ void transformvec (const GLfloat input[4], GLfloat output[4]) {
   }
 }
 
-GLMmodel* pmodel1 = NULL;
-void drawmodel(char* filename, GLuint texid)
+GLMmodel* models[10] = {NULL}; // Max number of different objects from obj files
+//char* pmodel1_filenames[10] = {(char*)""};
+void drawmodel(char* filename, GLuint pos)
 {
   // Load the model only if it hasn't been loaded before
   // If it's been loaded then pmodel1 should be a pointer to the model geometry data...otherwise it's null
-  if (!pmodel1)
+  //int pos = -1;
+  //for (int i = 0; i < 10; i++) {
+  //  if (pmodel1_filenames[i] == filename || (pos < 0 && pmodel1_filenames[i] == "")) {
+  //      pos = i;
+  //      break;
+  //  }
+  //}
+  if (models[pos] == NULL)
   {
     // this is the call that actualy reads the OBJ and creates the model object
-    pmodel1 = glmReadOBJ(filename);
-    if (!pmodel1) exit(0);
+    models[pos] = glmReadOBJ(filename);
+    if (!models[pos]) exit(0);
     // This will rescale the object to fit into the unity matrix
     // Depending on your project you might want to keep the original size and positions you had in 3DS Max or GMAX so you may have to comment this.
-    glmUnitize(pmodel1);
+    glmUnitize(models[pos]);
     // These 2 functions calculate triangle and vertex normals from the geometry data.
     // To be honest I had some problem with very complex models that didn't look to good because of how vertex normals were calculated
     // So if you can export these directly from you modeling tool do it and comment these line
     // 3DS Max can calculate these for you and GLM is perfectly capable of loading them
-    glmFacetNormals(pmodel1);
-    glmVertexNormals(pmodel1, 90.0);
+    glmFacetNormals(models[pos]);
+    glmVertexNormals(models[pos], 90.0);
   }
   // This is the call that will actually draw the model
   // Don't forget to tell it if you want textures or not :))
-  glmDraw(pmodel1, GLM_SMOOTH | GLM_TEXTURE);
+  glmDraw(models[pos], GLM_SMOOTH | GLM_TEXTURE);
 }
 
+// Fly location and rotation amounts
+GLfloat flyx = 0.0;
+GLfloat flyy = 0.0;
+GLfloat flyz = 0.0;
+GLint movefwd = 1;
+GLint moveright = 1;
+GLint moveup = 1;
+GLfloat rotateamt = 135.0;
 void display() {
 	glClearColor(0, 0, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -152,18 +168,23 @@ void display() {
           glUniform1f(shininesscol,obj->shininess);
 
           //Setup textures
-          glUniform1i(istex, (int)obj->texturing) ;
-          glBindTexture(GL_TEXTURE_2D, texNames[(int)(obj->texturing-1)]) ;
+          if (toggleTexture) {
+            glUniform1i(istex, 0) ;
+          }
+          else {
+            glUniform1i(istex, (int)obj->texturing) ;
+            glBindTexture(GL_TEXTURE_2D, texNames[(int)(obj->texturing-1)]) ;
+          }
 
           // Actually draw the object
           // We provide the actual glut drawing functions for you.  
           if (obj -> type == cube) {
-            if (wired) glutSolidCube(obj->size) ; 
+            if (wired) glutWireCube(obj->size) ; 
             else glutSolidCube(obj->size) ; 
           }
           else if (obj -> type == sphere) {
             const int tessel = 20 ; 
-            if (wired) glutSolidSphere(obj->size, tessel, tessel) ; 
+            if (wired) glutWireSphere(obj->size, tessel, tessel) ; 
             else glutSolidSphere(obj->size, tessel, tessel) ; 
           }
           else if (obj -> type == teapot) {
@@ -171,22 +192,238 @@ void display() {
             else glutSolidTeapot(obj->size) ; 
           }
           else if (obj -> type == castle) {
-            drawmodel("data/saint-riquier_obj/saintriqT3DS.obj", (GLuint)obj->size) ;
+            drawmodel("data/saint-riquier_obj/saintriqT3DS.obj", 0) ;
           }
           else if (obj -> type == sword) {
-            drawmodel("data/sword.obj", (GLuint)obj->size) ;
+            drawmodel("data/sword.obj", 1) ;
+          }
+          else if (obj -> type == shield) {
+            drawmodel("data/Shield_OBJ.obj", 2) ;
           }
           else if (obj -> type == tapestry) {
-            glBegin(GL_QUADS) ;
+            if (wired) glBegin(GL_LINES) ;
+            else glBegin(GL_QUADS) ;
             glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1*obj->size, 0.0) ;
             glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, obj->size, 0.0) ;
             glTexCoord2f(1.0, 1.0); glVertex3f(1.0, obj->size, 0.0) ;
             glTexCoord2f(1.0, 0.0); glVertex3f(1.0, -1*obj->size, 0.0) ;
             glEnd() ;
           }
+          else if (obj -> type == fly) {
+            // Apply transformations here using gl functions (not including push/pop transforms)
+            glTranslatef(flyx, flyy, flyz) ;
+            glTranslatef(-2.0, 5.0, 1.0) ;
+            glRotatef(rotateamt, 0, 0, 1) ;
+            glRotatef(90.0, 1, 0, 0) ;
+            glScalef(0.05, 0.05, 0.05) ;
+            drawmodel((char*)"data/Fly.obj", 0) ;
+          }
+          else if (obj -> type == table) {
+            // Hand draw table vertices/lines/faces + their (face) normals
+            vec3 normal, p1, p2, p3;
+            if (wired) glBegin(GL_LINES) ;
+            else glBegin(GL_QUADS);
+                glColor3f(1.0, 1.0, 0.0);
+                // Table top
+                p1 = vec3(-0.25, 5.25, 0.25);
+                p2 = vec3(-0.25, 4.75, 0.25);
+                p3 = vec3(0.25, 4.75, 0.25);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 5.25, 0.25);
+                glVertex3f(-0.25, 4.75, 0.25);
+                glVertex3f(0.25, 4.75, 0.25);
+                glVertex3f(0.25, 5.25, 0.25);
+
+                p1 = vec3(-0.25, 5.25, 0.30);
+                p2 = vec3(-0.25, 4.75, 0.30);
+                p3 = vec3(0.25, 4.75, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 5.25, 0.30);
+                glVertex3f(-0.25, 4.75, 0.30);
+                glVertex3f(0.25, 4.75, 0.30);
+                glVertex3f(0.25, 5.25, 0.30);
+
+                p1 = vec3(-0.25, 5.25, 0.25);
+                p2 = vec3(-0.25, 5.25, 0.30);
+                p3 = vec3(-0.25, 4.75, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 5.25, 0.25);
+                glVertex3f(-0.25, 5.25, 0.30);
+                glVertex3f(-0.25, 4.75, 0.30);
+                glVertex3f(-0.25, 4.75, 0.25);
+
+                p1 = vec3(-0.25, 4.75, 0.25);
+                p2 = vec3(-0.25, 4.75, 0.30);
+                p3 = vec3(0.25, 4.75, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 4.75, 0.25);
+                glVertex3f(-0.25, 4.75, 0.30);
+                glVertex3f(0.25, 4.75, 0.30);
+                glVertex3f(0.25, 4.75, 0.25);
+
+                p1 = vec3(0.25, 4.75, 0.25);
+                p2 = vec3(0.25, 4.75, 0.30);
+                p3 = vec3(0.25, 5.25, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 4.75, 0.25);
+                glVertex3f(0.25, 4.75, 0.30);
+                glVertex3f(0.25, 5.25, 0.30);
+                glVertex3f(0.25, 5.25, 0.25);
+
+                p1 = vec3(0.25, 5.25, 0.25);
+                p2 = vec3(0.25, 5.25, 0.30);
+                p3 = vec3(-0.25, 5.25, 0.30);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 5.25, 0.25);
+                glVertex3f(0.25, 5.25, 0.30);
+                glVertex3f(-0.25, 5.25, 0.30);
+                glVertex3f(-0.25, 5.25, 0.25);
+                // Table leg 1
+                p1 = vec3(-0.25, 4.75, 0.25);
+                p2 = vec3(-0.25, 4.75, 0.10);
+                p3 = vec3(-0.25, 4.80, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 4.75, 0.25);
+                glVertex3f(-0.25, 4.75, 0.10);
+                glVertex3f(-0.25, 4.80, 0.10);
+                glVertex3f(-0.25, 4.80, 0.25);
+
+                p1 = vec3(-0.25, 4.75, 0.25);
+                p2 = vec3(-0.25, 4.75, 0.10);
+                p3 = vec3(-0.20, 4.75, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 4.75, 0.25);
+                glVertex3f(-0.25, 4.75, 0.10);
+                glVertex3f(-0.20, 4.75, 0.10);
+                glVertex3f(-0.20, 4.75, 0.25);
+
+                p1 = vec3(-0.20, 4.75, 0.25);
+                p2 = vec3(-0.20, 4.75, 0.10);
+                p3 = vec3(-0.25, 4.80, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.20, 4.75, 0.25);
+                glVertex3f(-0.20, 4.75, 0.10);
+                glVertex3f(-0.25, 4.80, 0.10);
+                glVertex3f(-0.25, 4.80, 0.25);
+                // Table leg 2
+                p1 = vec3(-0.25, 5.25, 0.25);
+                p2 = vec3(-0.25, 5.25, 0.10);
+                p3 = vec3(-0.25, 5.20, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 5.25, 0.25);
+                glVertex3f(-0.25, 5.25, 0.10);
+                glVertex3f(-0.25, 5.20, 0.10);
+                glVertex3f(-0.25, 5.20, 0.25);
+
+                p1 = vec3(-0.25, 5.25, 0.25);
+                p2 = vec3(-0.25, 5.25, 0.10);
+                p3 = vec3(-0.20, 5.25, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 5.25, 0.25);
+                glVertex3f(-0.25, 5.25, 0.10);
+                glVertex3f(-0.20, 5.25, 0.10);
+                glVertex3f(-0.20, 5.25, 0.25);
+
+                p1 = vec3(-0.20, 5.25, 0.25);
+                p2 = vec3(-0.20, 5.25, 0.10);
+                p3 = vec3(-0.25, 5.20, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.20, 5.25, 0.25);
+                glVertex3f(-0.20, 5.25, 0.10);
+                glVertex3f(-0.25, 5.20, 0.10);
+                glVertex3f(-0.25, 5.20, 0.25);
+                // Table leg 3
+                p1 = vec3(0.25, 4.75, 0.25);
+                p2 = vec3(0.25, 4.75, 0.10);
+                p3 = vec3(0.25, 4.80, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 4.75, 0.25);
+                glVertex3f(0.25, 4.75, 0.10);
+                glVertex3f(0.25, 4.80, 0.10);
+                glVertex3f(0.25, 4.80, 0.25);
+
+                p1 = vec3(0.25, 4.75, 0.25);
+                p2 = vec3(0.25, 4.75, 0.10);
+                p3 = vec3(0.20, 4.75, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 4.75, 0.25);
+                glVertex3f(0.25, 4.75, 0.10);
+                glVertex3f(0.20, 4.75, 0.10);
+                glVertex3f(0.20, 4.75, 0.25);
+
+                p1 = vec3(0.20, 4.75, 0.25);
+                p2 = vec3(0.20, 4.75, 0.10);
+                p3 = vec3(0.25, 4.80, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.20, 4.75, 0.25);
+                glVertex3f(0.20, 4.75, 0.10);
+                glVertex3f(0.25, 4.80, 0.10);
+                glVertex3f(0.25, 4.80, 0.25);
+                // Table leg 4
+                p1 = vec3(0.25, 5.25, 0.25);
+                p2 = vec3(0.25, 5.25, 0.10);
+                p3 = vec3(0.25, 5.20, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 5.25, 0.25);
+                glVertex3f(0.25, 5.25, 0.10);
+                glVertex3f(0.25, 5.20, 0.10);
+                glVertex3f(0.25, 5.20, 0.25);
+
+                p1 = vec3(0.25, 5.25, 0.25);
+                p2 = vec3(0.25, 5.25, 0.10);
+                p3 = vec3(0.20, 5.25, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 5.25, 0.25);
+                glVertex3f(0.25, 5.25, 0.10);
+                glVertex3f(0.20, 5.25, 0.10);
+                glVertex3f(0.20, 5.25, 0.25);
+
+                p1 = vec3(0.20, 5.25, 0.25);
+                p2 = vec3(0.20, 5.25, 0.10);
+                p3 = vec3(0.25, 5.20, 0.10);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.20, 5.25, 0.25);
+                glVertex3f(0.20, 5.25, 0.10);
+                glVertex3f(0.25, 5.20, 0.10);
+                glVertex3f(0.25, 5.20, 0.25);
+            glEnd();
+          }
         }
     
         glutSwapBuffers();
+}
+
+// Fly animation method
+void moveFly(void) {
+    //if (moveright) flyx += 0.025 ;
+    //else flyx -= 0.025 ;
+    if (movefwd) flyy += 0.025 ;
+    else flyy -= 0.025 ;
+    if (flyy > 1 || flyy < 0) {
+        movefwd = !movefwd ;
+        if (flyy > 1) rotateamt = 315.0 ;
+        else if (flyy < 0) rotateamt = 135.0 ;
+    }
+    //if (flyx > 0.5 || flyx < -0.5) moveright = !moveright ;
+    glutPostRedisplay() ;
 }
 
 // Uses the Projection matrices (technically deprecated) to set perspective 
@@ -222,14 +459,20 @@ void saveScreenshot(string fname) {
 }
 
 void printHelp() {
-  std::cout << "\npress 'h' to print this message again.\n" 
-            << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n" 
-            << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"       
+  std::cout << "\npress 'h' to print this message again.\n"
+       << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n"
+            << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"
             << "press 'r' to reset the transformations.\n"
-            << "press 'v' 't' 's' to do view [default], translate, scale.\n"
-            << "press ESC to quit.\n" ;      
+            << "press 'p' to stop/start fly animation.\n"
+            << "press 'v' 't' 's' 'q' to do view [default], translate, scale, oldview [crystal ball interface].\n"
+            << "press up down arrow keys to move forward or backward.\n"
+            << "press left right arrow keys to rotate left or right.\n"
+            << "move mouse vertically (up/down) to rotate up or down.\n"
+            << "move mouse horizontally (left/right) to rotate left or right.\n"
+            << "press ESC to quit.\n" ;  
 }
 
+int isAnimate = 1; // Animation flag
 void keyboard(unsigned char key, int x, int y) {
 	switch(key) {
 	case '+':
@@ -268,14 +511,23 @@ void keyboard(unsigned char key, int x, int y) {
 		saveScreenshot("screenshot.png");
 		break;
         case 'r': // reset eye and up vectors, scale and translate. 
-		eye = eyeinit ; 
-		up = upinit ; 
-                sx = sy = 1.0 ; 
-                tx = ty = 0.0 ; 
-		break ;   
-        case 'v': 
-                transop = view ;
-                std::cout << "Operation is set to View\n" ; 
+	        eye = eyeinit ;
+                up = upinit ;
+                center = centerinit ;
+                sx = sy = 1.0 ;
+                tx = ty = 0.0 ;
+                fovy = fovyinit ;
+                reshape(w,h) ;
+                break ; 
+        case 'v':
+                if (transop == oldview) {
+                  transop = view ;
+                  std::cout << "Operation is set to View\n" ; 
+                }
+                else {
+                  transop = oldview ;
+                  std::cout << "Operation is set to OldView (crystal ball interface)\n" ;
+                }
                 break ; 
         case 't':
                 transop = translate ; 
@@ -285,13 +537,18 @@ void keyboard(unsigned char key, int x, int y) {
                 transop = scale ; 
                 std::cout << "Operation is set to Scale\n" ; 
                 break ; 
-        case 'q':
-                transop = oldview ;
-                std::cout << "Operation is set to OldView (crystal ball interface)\n" ;
-                break;
+        case 'x': //Toggle texturing
+                toggleTexture = !toggleTexture ;
+                break ;
         case 'w': // Toggle wireframe
                 wired = !wired ;
                 break ;
+        case 'p':
+                // As in hw0
+                isAnimate = !isAnimate ;
+                if (isAnimate) glutIdleFunc(moveFly);
+                else glutIdleFunc(NULL);
+                break;
         }
 	glutPostRedisplay();
 }
@@ -366,6 +623,62 @@ void specialKey(int key, int x, int y) {
         glutPostRedisplay();
 }
 
+void drag(int x, int y) {
+    // Change in points
+    int dfx = x-oldx ;
+    int dfy = (h-y)-(h-oldy) ;
+
+    // DEBUG
+    //cout << "dfx: " << dfx << ", dfy: " << dfy << "\n" ;
+
+    // Determine which way/plane to move eye
+    // Mouse drag moves faster than arrow movements, so leave amount=0.25
+    float radians = 0.25 * pi/180 ;
+    if (dfx >= -10 && dfx <= 10 && dfy > 0) {
+        // Move up along yz plane
+        // Translate eye to origin (same), center by same amount
+        center = center - eye;
+        // Rotate center by amount
+        center[1] = center[1]*cos(radians) - center[2]*sin(radians) ;
+        center[2] = center[2]*cos(radians) + center[1]*sin(radians) ;
+        // Translate eye back (same), center by same amount
+        center = center + eye;
+    } else if (dfx >= -5 && dfx <= 5 && dfy <= 0) {
+        // Move down along yz plane
+        // Translate eye to origin (same), center by same amount
+        center = center - eye;
+        // Rotate center by amount
+        center[1] = center[1]*cos(-radians) - center[2]*sin(-radians) ;
+        center[2] = center[2]*cos(-radians) + center[1]*sin(-radians) ;
+        // Translate eye back (same), center by same amount
+        center = center + eye;
+    } else if (dfx > 0 && dfy >= -20 && dfy <= 20) {
+        // Move right along xy plane
+        // Translate eye to origin (same), center by same amount
+        center = center - eye;
+        // Rotate center by amount
+        center[0] = center[0]*cos(-radians) - center[1]*sin(-radians) ;
+        center[1] = center[1]*cos(-radians) + center[0]*sin(-radians) ;
+        // Translate eye back (same), center by same amount
+        center = center + eye;
+    } else if (dfx < 0 && dfy >= -20 && dfy <= 20) {
+        // Move left along xy plane
+        // Translate eye to origin (same), center by same amount
+        center = center - eye;
+        // Rotate center by amount
+        center[0] = center[0]*cos(radians) - center[1]*sin(radians) ;
+        center[1] = center[1]*cos(radians) + center[0]*sin(radians) ;
+        // Translate eye back (same), center by same amount
+        center = center + eye;
+    }
+
+    // Save oldx and oldy and redraw
+    oldx = x ;
+    oldy = y ;
+
+    glutPostRedisplay();
+}
+
 void init() {
       // Initialize shaders
       vertexshader = initshaders(GL_VERTEX_SHADER, "shaders/light.vert.glsl") ;
@@ -409,6 +722,7 @@ int main(int argc, char* argv[]) {
 	init();
         readfile(argv[1]) ; 
 	glutDisplayFunc(display);
+        glutMotionFunc(drag);
 	glutSpecialFunc(specialKey);
 	glutKeyboardFunc(keyboard);
 	glutReshapeFunc(reshape);

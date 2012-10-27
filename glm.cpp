@@ -20,6 +20,8 @@
 #include <assert.h>
 #include "glm.h"
 #include "Texture.h"
+#include "Transform.h"
+#include "variables.h"
 
 //#define DebugVisibleSurfaces
 
@@ -1955,7 +1957,7 @@ GLvoid glmDraw(GLMmodel* model, GLuint mode)
 {
 	glmDraw(model,mode,0);
 }
-GLvoid glmDraw(GLMmodel* model, GLuint mode,char *drawonly)
+GLvoid glmDraw(GLMmodel* model, GLuint mode, char *drawonly)
 {
     static GLuint i;
     static GLMgroup* group;
@@ -2051,7 +2053,8 @@ GLvoid glmDraw(GLMmodel* model, GLuint mode,char *drawonly)
             glColor3fv(material->diffuse);
         }
         
-        glBegin(GL_TRIANGLES);
+        if (wired) glBegin(GL_LINES);
+        else glBegin(GL_TRIANGLES);
         for (i = 0; i < group->numtriangles; i++) {
             triangle = &T(group->triangles[i]);
 #ifdef DebugVisibleSurfaces

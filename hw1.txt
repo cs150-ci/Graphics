@@ -15,7 +15,8 @@ specular 1 1 1 1
 shininess 0
 
 # Parameter: 0 = no texture, 1 = wood, 2 = stone
-texture 4
+texture 0
 #teapot 2
 #castle 2
-tapestry 1
+shield 2
+#tapestry 1

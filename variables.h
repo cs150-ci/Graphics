@@ -14,27 +14,33 @@
 #endif 
 
 EXTERN int amount; // The amount of rotation for each arrow press
-EXTERN vec3 eye; // The (regularly updated) vector coordinates of the eye 
-EXTERN vec3 up;  // The (regularly updated) vector coordinates of the up 
+EXTERN vec3 eye; // The (regularly updated) vector coordinates of the eye
+EXTERN vec3 up; // The (regularly updated) vector coordinates of the up
+EXTERN vec3 center; // center also regularly updated
+EXTERN float fovy; // fovy variable
 
-#ifdef MAINPROGRAM 
+#ifdef MAINPROGRAM
 vec3 eyeinit(0.0,0.0,5.0) ; // Initial eye position, also for resets
 vec3 upinit(0.0,1.0,0.0) ; // Initial up position, also for resets
-vec3 center(0.0,0.0,0.0) ; // Center look at point 
-int w = 600, h = 400 ; // width and height 
-float fovy = 90.0 ; // For field of view
-#else 
-EXTERN vec3 eyeinit ; 
-EXTERN vec3 upinit ; 
-EXTERN vec3 center ; 
-EXTERN int w, h ; 
-EXTERN float fovy ; 
+vec3 centerinit(0.0,0.0,0.0) ; // Center look at point
+int w = 600, h = 400 ; // width and height
+float fovyinit = 90.0 ; // For field of view, initial
+#else
+EXTERN vec3 eyeinit ;
+EXTERN vec3 upinit ;
+EXTERN vec3 centerinit ;
+EXTERN int w, h ;
+EXTERN float fovyinit ;
 #endif 
+
+// Mouse movement
+EXTERN int oldx ;
+EXTERN int oldy ;
 
 EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user 
 EXTERN GLuint vertexshader, fragmentshader, shaderprogram ; // shaders
 static enum {view, translate, scale, oldview} transop ; // which operation to transform 
-enum shape {cube, sphere, teapot, castle, sword, tapestry} ;
+enum shape {cube, sphere, teapot, castle, sword, shield, tapestry, fly, table} ;
 EXTERN float sx, sy ; // the scale in x and y 
 EXTERN float tx, ty ; // the translation in x and y
 
@@ -84,5 +90,6 @@ EXTERN GLuint shininesscol ;
 EXTERN GLuint texNames[10] ; // texture buffer
 EXTERN GLuint istex ;  // texture variable passed to shaders
 EXTERN GLfloat texturing ; // global texture value
+EXTERN GLuint toggleTexture ;
 EXTERN bool wired ; // toggle wireframe mode
 

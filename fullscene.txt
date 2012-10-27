@@ -5,8 +5,8 @@
 
 # Set the scene size and camera location 
 # TODO: better camera placement
-#size 1150 750
-size 500 500
+size 1150 750
+#size 500 500
 camera 0 -5 5 0 0 0 0 1 1 30.0
 #camera 0 -6 1.5 0 0 0.5 0 1 1 20.0
 #camera 2 -8 1.5 0 0 0.5 -0.25 1 1 20.0
@@ -43,7 +43,7 @@ translate 0 0 -0.2
 # Sky
   texture 3
   pushTransform
-        translate 0 0 3
+        translate 0 0 5
         scale 5 5 1
         tapestry 1
   popTransform
@@ -63,6 +63,12 @@ translate 0 0 -0.2
         translate 0 1 0
         scale 2.2 0.4 1
         tapestry 1
+  popTransform
+
+  pushTransform
+        translate 0 1 0
+        #scale 2.2 0.4 1
+        castle 1
   popTransform
 
 # Wall (top, with door opening)
