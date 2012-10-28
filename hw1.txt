@@ -16,7 +16,7 @@ shininess 0
 
 # Parameter: 0 = no texture, 1 = wood, 2 = stone
 texture 1
-#teapot 2
-fly 2
+teapot 20
+#castle 2
 #shield 2
 #tapestry 1

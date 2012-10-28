@@ -695,12 +695,13 @@ void init() {
       shininesscol = glGetUniformLocation(shaderprogram,"shininess") ;       
 
       // Initialize textures
-      LoadTexture((char*)"data/wood.tga", 0) ;
-      LoadTexture((char*)"data/stone.tga", 1) ;
-      LoadTexture((char*)"data/sky.tga", 2) ;
-      LoadTexture((char*)"data/grass.tga", 3) ;
-      LoadTexture((char*)"data/tree_of_life.tga", 4) ;
-      LoadTexture((char*)"data/ArrasWawel.tga", 5) ;
+      LoadTexture((char*)"data/sky.tga", 0) ;
+      LoadTexture((char*)"data/water.tga", 1) ;
+      LoadTexture((char*)"data/grass.tga", 2) ;
+      LoadTexture((char*)"data/wood.tga", 3) ;
+      LoadTexture((char*)"data/stone.tga", 4) ;
+      LoadTexture((char*)"data/tree_of_life.tga", 5) ;
+      LoadTexture((char*)"data/ArrasWawel.tga", 6) ;
       istex = glGetUniformLocation(shaderprogram,"istex") ; 
 
       // Enable the depth test
