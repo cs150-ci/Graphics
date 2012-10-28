@@ -789,7 +789,7 @@ static GLvoid glmFirstPass(GLMmodel* model, FILE* file, mycallback *call)
     char        buf[128];
     
     /* make a default group */
-    group = glmAddGroup(model, "default");
+    group = glmAddGroup(model, (char*)"default");
     
     numvertices = numnormals = numtexcoords = numtriangles = 0;
     while(fscanf(file, "%s", buf) != EOF) {
@@ -1862,7 +1862,7 @@ glmWriteOBJ(GLMmodel* model, char* filename, GLuint mode)
     /* spit out the texture coordinates */
     if (mode & GLM_TEXTURE) {
         fprintf(file, "\n");
-        fprintf(file, "# %d texcoords\n", model->texcoords);
+        //fprintf(file, "# %d texcoords\n", model->texcoords);
         for (i = 1; i <= model->numtexcoords; i++) {
             fprintf(file, "vt %f %f\n", 
                 model->texcoords[2 * i + 0],

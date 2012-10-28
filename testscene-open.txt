@@ -1,26 +1,25 @@
 # Scene description.
-# Lights are position (4), color (4) 
+# Lights are position (4), color (4)
 # Materials are defined for each object
-# Scene File for Demo program 
+# Scene File for Demo program
 
-# Set the scene size and camera location 
+# Set the scene size and camera location
 # TODO: better camera placement
-#size 1150 750
-size 500 500
-camera 0 -5 5 0 0 0 0 1 1 30.0
-#camera 0 -6 1.5 0 0 0.5 0 1 1 20.0
-#camera 2 -8 1.5 0 0 0.5 -0.25 1 1 20.0
+size 1150 750
+# camera 0 -5 5 0 0 0 0 1 1 30.0
+camera 0 -6 1.5 0 0 0.5 0 1 1 20.0
+# camera 2 -8 1.5 0 0 0.5 -0.25 1 1 20.0
 
-# lights.  A single point and directional light
+# lights. A single point and directional light
 # Note that your program must support up to 10 lights
 # TODO: better lighting placement
-light 0.6 0 0.1 0 1 0.5 0 1  
-light 0 -0.6 0.1 1 0.5 0.5 1 1 
+light 0.6 0 0.1 0 1 0.5 0 1
+light 0 -0.6 0.1 1 0.5 0.5 1 1
 
-# I do a global transform to move this down a little 
-# A good use of matrix stacks and hierarchy 
-pushTransform 
-translate 0 0 -0.2 
+# I do a global transform to move this down a little
+# A good use of matrix stacks and hierarchy
+pushTransform
+translate 0 0 -0.2
 
 # Sky (top)
 # Sky (bottom)
@@ -44,22 +43,22 @@ translate 0 0 -0.2
   popTransform
 
 # Floor (now with shading, before the door)
-# Materials first.  We don't change specular and shininess
+# Materials first. We don't change specular and shininess
   ambient 0.5 0.2 0.07 1
   diffuse 0 0 0 1
   pushTransform
         translate 0 -1.5 0
-        scale 1.5 0.5 0.025 
-        cube 3.0 
+        scale 1.5 0.5 0.025
+        cube 3.0
   popTransform
 
 # Floor (now with shading, with the door)
-# Materials first.  We don't change specular and shininess
+# Materials first. We don't change specular and shininess
   ambient 0.5 0.2 0.07 1
   diffuse 0 0 0 1
   pushTransform
-        translate 0 1 0
-        scale 1.5 0.2 0.025
+        translate 0 8.2 0
+        scale 1.5 5 0.025
         cube 3.0
   popTransform
 
@@ -110,7 +109,7 @@ translate 0 0 -0.2
   popTransform
 
 
-# Water 
+# Water
   ambient 0.1 0.1 0.5 1
   diffuse 0.1 0.1 0.5 1
   pushTransform
@@ -151,9 +150,9 @@ translate 0 0 -0.2
 # Sword 1
   diffuse 0.3 0.4 0.3 1
   pushTransform
-        #translate 0 -0.35 -0.58
-        #rotate 1 0 0 -90
-	#scale 0.25 0.25 0.25
+        # translate 0 -0.35 -0.58
+        # rotate 1 0 0 -90
+# scale 0.25 0.25 0.25
         translate 1 1.15 0.6
         scale 0.35 0.35 0.35
         sword 1.0
@@ -162,14 +161,31 @@ translate 0 0 -0.2
 # Sword 2
   diffuse 0.3 0.4 0.3 1
   pushTransform
-        #translate 0 -0.35 -0.58
-        #rotate 1 0 0 -90
-        #scale 0.25 0.25 0.25
+        # translate 0 -0.35 -0.58
+        # rotate 1 0 0 -90
+        # scale 0.25 0.25 0.25
         translate -1 1.15 0.6
         scale 0.35 0.35 0.35
         sword 1.0
   popTransform
 
+# Table
+  ambient 0.1 0.1 0.05 1
+  diffuse 0.1 0.1 0.05 1
+  pushTransform
+        table 1.0
+  popTransform
+
+# Fly
+  ambient 0.5 0.4 0.2 1
+  diffuse 0.547059 0.464706 0.164706 1
+  pushTransform
+        # translate -2 5 1
+        # rotate 1 0 0 90
+        # scale 0.05 0.05 0.05
+        fly 1.0
+  popTransform
+
+
 # Undo global transform
 popTransform
-

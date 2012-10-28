@@ -192,13 +192,13 @@ void display() {
             else glutSolidTeapot(obj->size) ; 
           }
           else if (obj -> type == castle) {
-            drawmodel("data/saint-riquier_obj/saintriqT3DS.obj", 0) ;
+            drawmodel((char*)"data/saint-riquier_obj/saintriqT3DS.obj", 0) ;
           }
           else if (obj -> type == sword) {
-            drawmodel("data/sword.obj", 1) ;
+            drawmodel((char*)"data/sword.obj", 1) ;
           }
           else if (obj -> type == shield) {
-            drawmodel("data/Shield_OBJ.obj", 2) ;
+            drawmodel((char*)"data/fly.obj", 2) ;
           }
           else if (obj -> type == tapestry) {
             if (wired) glBegin(GL_LINES) ;
@@ -216,7 +216,7 @@ void display() {
             glRotatef(rotateamt, 0, 0, 1) ;
             glRotatef(90.0, 1, 0, 0) ;
             glScalef(0.05, 0.05, 0.05) ;
-            drawmodel((char*)"data/Fly.obj", 0) ;
+            drawmodel((char*)"data/fly.obj", 3) ;
           }
           else if (obj -> type == table) {
             // Hand draw table vertices/lines/faces + their (face) normals
@@ -695,12 +695,12 @@ void init() {
       shininesscol = glGetUniformLocation(shaderprogram,"shininess") ;       
 
       // Initialize textures
-      LoadTexture("data/wood.tga", 0) ;
-      LoadTexture("data/stone.tga", 1) ;
-      LoadTexture("data/sky.tga", 2) ;
-      LoadTexture("data/grass.tga", 3) ;
-      LoadTexture("data/tree_of_life.tga", 4) ;
-      LoadTexture("data/ArrasWawel.tga", 5) ;
+      LoadTexture((char*)"data/wood.tga", 0) ;
+      LoadTexture((char*)"data/stone.tga", 1) ;
+      LoadTexture((char*)"data/sky.tga", 2) ;
+      LoadTexture((char*)"data/grass.tga", 3) ;
+      LoadTexture((char*)"data/tree_of_life.tga", 4) ;
+      LoadTexture((char*)"data/ArrasWawel.tga", 5) ;
       istex = glGetUniformLocation(shaderprogram,"istex") ; 
 
       // Enable the depth test

@@ -87,7 +87,7 @@ EXTERN GLuint shininesscol ;
 
 // Variables to use for texture mapping
 // EXTERN GLubyte texture[256][256][3] ;
-EXTERN GLuint texNames[10] ; // texture buffer
+EXTERN GLuint texNames[20] ; // texture buffer
 EXTERN GLuint istex ;  // texture variable passed to shaders
 EXTERN GLfloat texturing ; // global texture value
 EXTERN GLuint toggleTexture ;
