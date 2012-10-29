@@ -201,7 +201,8 @@ void display() {
             drawmodel((char*)"data/fly.obj", 2) ;
           }
           else if (obj -> type == tapestry) {
-            if (wired) glBegin(GL_LINES) ;
+            if (toggleTexture) continue ;
+            else if (wired) glBegin(GL_LINES) ;
             else glBegin(GL_QUADS) ;
             glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1*obj->size, 0.0) ;
             glTexCoord2f(0.0, 1.0); glVertex3f(-1.0, obj->size, 0.0) ;

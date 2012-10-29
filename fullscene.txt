@@ -1,20 +1,15 @@
 # Scene description.
 # Lights are position (4), color (4) 
 # Materials are defined for each object
-# Scene File for Demo program 
+# Scene File for Castle
 
 # Set the scene size and camera location 
-# TODO: better camera placement
 size 1150 750
 camera 0 -5 5 0 0 0 0 1 1 30.0
 
-# lights.  A single point and directional light
-# Note that your program must support up to 10 lights
-# TODO: better lighting placement
+# Sunlight
 light 0.6 0 0.1 0 1 0.5 0 1  
 #light 0 -0.6 0.1 1 0.5 0.5 1 1
-light 0.2 3.5 0.2 1 1 0.5 0.1 1
-light -0.2 3.5 0.2 1 1 0.5 0.1 1
 
 # I do a global transform to move this down a little 
 # A good use of matrix stacks and hierarchy 
@@ -22,17 +17,15 @@ pushTransform
 translate 0 0 -0.2 
 
 # Sky
-  ambient 0.3 0.6 0.8 1
-  diffuse 0.3 0.6 0.8 1
   texture 1
   pushTransform
-        translate 0 10 2
+        translate 0 12 2
         rotate 1 0 0 -45
         scale 20 20 1
         tapestry 1
   popTransform
   pushTransform
-        translate 0 -10 2
+        translate 0 -12 2
         rotate 1 0 0 45
         scale 20 20 1
         tapestry 1
@@ -54,70 +47,26 @@ translate 0 0 -0.2
   texture 2
   pushTransform
         translate 0 0 -1
-        scale 6 6 1
-        tapestry 1
-  popTransform
-  pushTransform
-        translate 6 0 -1
-        scale 6 6 1
-        tapestry 1
-  popTransform
-  pushTransform
-        translate -6 0 -1
-        scale 6 6 1
+        scale 10 6 1
         tapestry 1
   popTransform
 
 # Grass
   texture 3
   pushTransform
-        translate 0 4 0.18
-        scale 4 2 1
+        translate 0 3.68 0.18
+        scale 4 1.7 1
         tapestry 1
   popTransform
   push Transform
-        translate 0 -4 0.17
+        translate 0 -4 0.18
         scale 10 2 1
         tapestry 1
   popTransform
 
-# Rock Cliff
-  texture 5
-  pushTransform
-        translate 0 2 -2
-        rotate 1 0 0 90
-        scale 4 2 1
-        tapestry 1
-  popTransform
-
-# Drawbridge (open)
-  texture 0
-  ambient 0.3 0.4 0.3 1
-  diffuse 0.3 0.4 0.3 1
-  pushTransform
-        scale 0.38 1.8 0.025
-        cube 3.0
-  popTransform
-
-# Ropes
-  diffuse 0.3 0.4 0.3 1
-  pushTransform
-        translate 0 -0.35 -0.58
-        rotate 1 0 0 -58
-        scale 0.05 0.05 2.4
-        translate 9.5 -14.5 0.5
-        cube 1.0
-  popTransform
-  pushTransform
-        translate 0 -0.35 -0.58
-        rotate 1 0 0 -58
-        scale 0.05 0.05 2.4
-        translate -9.5 -14.5 0.5
-        cube 1.0
-  popTransform
-
 # Castle
-  texture 1
+  ambient 0.547059 0.464706 0.164706 1
+  diffuse 0.547059 0.464706 0.164706 1
   pushTransform
         translate 0 4 3
         rotate 1 0 0 90
@@ -139,18 +88,127 @@ translate 0 0 -0.2
         castle 1
   popTransform
 
-# Swords
+# Rock Cliff
   texture 0
-  diffuse 0.3 0.4 0.3 1
+  ambient 0.328 0.328 0.328 1
+  diffuse 0.328 0.328 0.328 1
   pushTransform
-        translate 2 3 0.6
-        scale 0.35 0.35 0.35
-        sword 1.0
+        translate 0 6 -1.53
+        scale 8 8 3
+        cube 1
   popTransform
   pushTransform
-        translate -2 3 0.6
+        translate 0 -4 -1.53
+        scale 20 4 3
+        cube 1
+  popTransform
+
+# Drawbridge (open)
+  ambient 0.36 0.2 0.09 1
+  diffuse 0.36 0.2 0.09 1
+  pushTransform
+        scale 0.73 1.8 0.025
+        cube 3
+  popTransform
+  pushTransform
+        translate 1 0.85 1
+        rotate 1 0 0 -58
+        scale 0.05 0.05 4
+        cube 1
+  popTransform
+  pushTransform
+        translate -1 0.85 1
+        rotate 1 0 0 -58
+        scale 0.05 0.05 4
+        cube 1
+  popTransform
+  texture 4
+  pushTransform
+        translate 0 -0.09 0.04
+        scale 1.1 1 1
+        tapestry 2.62
+  popTransform
+
+# Armory Walls
+  texture 5
+  pushTransform
+        translate 0 10 1.45
+        rotate 1 0 0 90
+        scale 3 1.5 1
+        tapestry 1
+  popTransform
+  pushTransform
+        translate 3 8 1.45
+        rotate 0 0 1 90
+        rotate 1 0 0 90
+        scale 2.5 1.5 1
+        tapestry 1
+  popTransform
+  pushTransform
+        translate -3 8 1.45
+        rotate 0 0 1 90
+        rotate 1 0 0 90
+        scale 2.5 1.5 1
+        tapestry 1
+  popTransform
+
+# Torches
+  light 0.15 4 1.1 1 1 0.5 0.1 1
+  light -0.15 4 1.1 1 1 0.5 0.1 1
+  texture 0
+  ambient 0.1 0.1 0.05 1
+  diffuse 0.1 0.1 0.05 1
+  pushTransform
+        translate 0.19 4 0.95
+        scale 0.05 0.05 0.15
+        cube 1
+  popTransform
+  pushTransform
+        translate -0.19 4 0.95
+        scale 0.05 0.05 0.15
+        cube 1
+  popTransform
+
+# Table
+  pushTransform
+        translate 0 -1 -0.2
+        scale 2 2 2
+        table 1
+  popTransform
+
+# Swords
+  ambient 0.1367 0.418 0.5547 1
+  diffuse 0.1367 0.418 0.5547 1
+  pushTransform
+        translate 1 10 1.2
         scale 0.35 0.35 0.35
-        sword 1.0
+        sword 1
+  popTransform
+  emission 0.1367 0.418 0.5547 1
+  specular 0.1367 0.418 0.5547 1
+  shininess 1
+  pushTransform
+        translate 0 9 0.42
+        rotate 0 0 1 30
+        rotate 1 0 0 90
+        scale 0.35 0.35 0.35
+        sword 1
+  popTransform
+
+# Tapestries
+  texture 6
+  pushTransform
+        translate 0 9.9 1.5
+        rotate 1 0 0 -90
+        scale 0.5 0.5 1
+        tapestry 1.5
+  popTransform
+  texture 7
+  pushTransform
+        translate -1.5 9.9 1.5
+        rotate 1 0 0 -90
+        scale 0.5 0.5 1
+        tapestry 1.5
   popTransform
 
 # Undo global transform
