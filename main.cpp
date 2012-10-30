@@ -188,6 +188,11 @@ void display() {
             if (wired) glutWireSphere(obj->size, tessel, tessel) ; 
             else glutSolidSphere(obj->size, tessel, tessel) ; 
           }
+          else if (obj -> type == cone) {
+            const int tessel = 20 ; 
+            if (wired) glutWireCone(1, obj->size, tessel, tessel) ; 
+            else glutSolidCone(1, obj->size, tessel, tessel) ; 
+          }
           else if (obj -> type == teapot) {
             if (wired) glutWireTeapot(obj->size) ;
             else glutSolidTeapot(obj->size) ; 
@@ -215,7 +220,7 @@ void display() {
             glRotatef(rotateamt, 0, 0, 1) ;
             glRotatef(90.0, 1, 0, 0) ;
             glScalef(0.05, 0.05, 0.05) ;
-            drawmodel((char*)"data/fly.obj", 3) ;
+            drawmodel((char*)"data/fly/fly.obj", 3) ;
           }
           else if (obj -> type == shield) {
             vec3 normal, p1, p2, p3;
@@ -834,6 +839,7 @@ int main(int argc, char* argv[]) {
 	glutKeyboardFunc(keyboard);
 	glutReshapeFunc(reshape);
 	glutReshapeWindow(w, h);
+        keyboard('a', 0, 0);
 
 	printHelp();
 	glutMainLoop();

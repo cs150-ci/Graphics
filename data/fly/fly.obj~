@@ -1,7 +1,7 @@
 # Max2Obj Version 4.0 Mar 10th, 2001
 #
-#mtllib ./Fly.mtl
-#g
+mtllib ./Fly.mtl
+g
 # object (null) to come ...
 #
 v  -1393.810425 1608.989014 2065.923828
@@ -1373,7 +1373,7 @@ vn  0.613074 -0.678647 0.404448
 # 454 vertex normals
 
 g (null)
-##usemtl FLYTCUE
+usemtl FLYTCUE
 s 1
 f 1/1/1 85/85/85 2/2/2
 f 3/3/3 79/79/79 4/4/4
@@ -2049,7 +2049,7 @@ vn  -0.635419 -0.747644 0.193056
 # 66 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 488/488 486/486 464/464
 f 490/490 488/488 464/464
@@ -2333,7 +2333,7 @@ vn  -0.901066 -0.407786 -0.147617
 # 72 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 527/527 521/521 526/526
 f 556/556 554/554 529/529
@@ -2701,7 +2701,7 @@ vn  -0.071586 -0.916288 0.394071
 # 108 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 594/594 593/593 649/649
 f 638/638 637/637 650/650
@@ -3089,7 +3089,7 @@ vn  -0.402338 -0.907295 -0.122233
 # 82 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 702/702 701/701 709/709
 f 739/739 702/702 709/709
@@ -3361,7 +3361,7 @@ vn  -0.367559 -0.745449 -0.556063
 # 50 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 806/806 805/805 788/788
 f 815/815 791/791 792/792
@@ -3549,7 +3549,7 @@ vn  -0.382617 -0.778434 -0.497639
 # 40 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 2
 f 858/858 834/834 843/843
 f 834/834 857/857 843/843
@@ -3729,7 +3729,7 @@ vn  -0.514793 -0.788682 -0.336109
 # 44 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 895/895 873/873 878/878
 f 896/896 895/895 878/878
@@ -3907,7 +3907,7 @@ vn  -0.462509 -0.313598 -0.829302
 # 41 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 922/922 917/917 921/921
 f 929/929 951/951 939/939
@@ -4134,7 +4134,7 @@ vn  0.635420 -0.747644 0.193053
 # 66 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 989/989 991/991 967/967
 f 991/991 993/993 967/967
@@ -4418,7 +4418,7 @@ vn  0.901066 -0.407785 -0.147617
 # 72 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1024/1024 1030/1030 1029/1029
 f 1057/1057 1059/1059 1032/1032
@@ -4786,7 +4786,7 @@ vn  0.071586 -0.916288 0.394070
 # 108 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1096/1096 1097/1097 1152/1152
 f 1140/1140 1141/1141 1153/1153
@@ -5174,7 +5174,7 @@ vn  0.402341 -0.907292 -0.122240
 # 82 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1204/1204 1205/1205 1212/1212
 f 1205/1205 1242/1242 1212/1212
@@ -5446,7 +5446,7 @@ vn  0.367554 -0.745441 -0.556076
 # 50 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1308/1308 1309/1309 1291/1291
 f 1294/1294 1318/1318 1295/1295
@@ -5634,7 +5634,7 @@ vn  0.382621 -0.778432 -0.497638
 # 40 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 2
 f 1337/1337 1361/1361 1346/1346
 f 1360/1360 1337/1337 1346/1346
@@ -5814,7 +5814,7 @@ vn  0.514792 -0.788683 -0.336108
 # 44 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1376/1376 1398/1398 1381/1381
 f 1398/1398 1399/1399 1381/1381
@@ -5992,7 +5992,7 @@ vn  0.462511 -0.313604 -0.829299
 # 41 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1420/1420 1425/1425 1424/1424
 f 1454/1454 1432/1432 1442/1442
@@ -6207,7 +6207,7 @@ vn  0.148987 -0.905155 0.398118
 # 60 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1483/1483 1461/1461 1494/1494
 f 1486/1486 1484/1484 1465/1465
@@ -6479,7 +6479,7 @@ vn  0.389492 -0.407785 -0.825838
 # 72 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1527/1527 1521/1521 1526/1526
 f 1556/1556 1554/1554 1529/1529
@@ -6847,7 +6847,7 @@ vn  -0.359241 -0.916288 -0.177096
 # 108 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1594/1594 1593/1593 1649/1649
 f 1638/1638 1637/1637 1650/1650
@@ -7235,7 +7235,7 @@ vn  0.228071 -0.907292 -0.353276
 # 82 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1702/1702 1701/1701 1709/1709
 f 1739/1739 1702/1702 1709/1709
@@ -7507,7 +7507,7 @@ vn  0.635673 -0.745430 -0.200634
 # 50 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1806/1806 1805/1805 1788/1788
 f 1815/1815 1791/1791 1792/1792
@@ -7695,7 +7695,7 @@ vn  0.583590 -0.778444 -0.231187
 # 40 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 2
 f 1858/1858 1834/1834 1843/1843
 f 1834/1834 1857/1857 1843/1843
@@ -7875,7 +7875,7 @@ vn  0.464602 -0.788684 -0.402645
 # 44 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1895/1895 1873/1873 1878/1878
 f 1896/1896 1895/1895 1878/1878
@@ -8053,7 +8053,7 @@ vn  0.924462 -0.313590 -0.216869
 # 41 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1922/1922 1917/1917 1921/1921
 f 1929/1929 1951/1951 1939/1939
@@ -8208,7 +8208,7 @@ vn  0.472506 -0.877938 0.077224
 # 30 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1979/1979 1981/1981 1964/1964
 f 1981/1981 1982/1982 1964/1964
@@ -8420,7 +8420,7 @@ vn  -0.862249 -0.407786 0.300396
 # 72 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 1988/1988 1994/1994 1993/1993
 f 2021/2021 2023/2023 1996/1996
@@ -8788,7 +8788,7 @@ vn  -0.138298 -0.916288 -0.375886
 # 108 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2060/2060 2061/2061 2116/2116
 f 2104/2104 2105/2105 2117/2117
@@ -9176,7 +9176,7 @@ vn  -0.375320 -0.907295 0.189606
 # 82 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2168/2168 2169/2169 2176/2176
 f 2169/2169 2206/2206 2176/2176
@@ -9448,7 +9448,7 @@ vn  -0.266443 -0.745451 0.610992
 # 50 vertex normals
 
 g (null)
-##usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2272/2272 2273/2273 2255/2255
 f 2258/2258 2282/2282 2259/2259
@@ -9636,7 +9636,7 @@ vn  -0.291325 -0.778431 0.556034
 # 40 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 2
 f 2301/2301 2325/2325 2310/2310
 f 2324/2324 2301/2301 2310/2310
@@ -9816,7 +9816,7 @@ vn  -0.449312 -0.788684 0.419638
 # 44 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2340/2340 2362/2362 2345/2345
 f 2362/2362 2363/2363 2345/2345
@@ -9994,7 +9994,7 @@ vn  -0.312977 -0.313587 0.896498
 # 41 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2384/2384 2389/2389 2388/2388
 f 2418/2418 2396/2396 2406/2406
@@ -10149,7 +10149,7 @@ vn  -0.472505 -0.877938 0.077225
 # 30 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2448/2448 2446/2446 2431/2431
 f 2449/2449 2448/2448 2431/2431
@@ -10361,7 +10361,7 @@ vn  0.862250 -0.407786 0.300394
 # 72 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2461/2461 2455/2455 2460/2460
 f 2490/2490 2488/2488 2463/2463
@@ -10729,7 +10729,7 @@ vn  0.138295 -0.916288 -0.375887
 # 108 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2528/2528 2527/2527 2583/2583
 f 2572/2572 2571/2571 2584/2584
@@ -11117,7 +11117,7 @@ vn  0.375320 -0.907290 0.189630
 # 82 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2636/2636 2635/2635 2643/2643
 f 2673/2673 2636/2636 2643/2643
@@ -11389,7 +11389,7 @@ vn  0.266445 -0.745450 0.610992
 # 50 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2740/2740 2739/2739 2722/2722
 f 2749/2749 2725/2725 2726/2726
@@ -11577,7 +11577,7 @@ vn  0.291321 -0.778428 0.556041
 # 40 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 2
 f 2792/2792 2768/2768 2777/2777
 f 2768/2768 2791/2791 2777/2777
@@ -11757,7 +11757,7 @@ vn  0.449312 -0.788684 0.419639
 # 44 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2829/2829 2807/2807 2812/2812
 f 2830/2830 2829/2829 2812/2812
@@ -11935,7 +11935,7 @@ vn  0.312977 -0.313576 0.896501
 # 41 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2856/2856 2851/2851 2855/2855
 f 2863/2863 2885/2885 2873/2873
@@ -12150,7 +12150,7 @@ vn  -0.148987 -0.905155 0.398118
 # 60 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2892/2892 2914/2914 2925/2925
 f 2915/2915 2917/2917 2896/2896
@@ -12422,7 +12422,7 @@ vn  -0.389492 -0.407786 -0.825837
 # 72 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 2952/2952 2958/2958 2957/2957
 f 2985/2985 2987/2987 2960/2960
@@ -12790,7 +12790,7 @@ vn  0.359240 -0.916288 -0.177097
 # 108 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 3024/3024 3025/3025 3080/3080
 f 3068/3068 3069/3069 3081/3081
@@ -13178,7 +13178,7 @@ vn  -0.228065 -0.907294 -0.353276
 # 82 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 3132/3132 3133/3133 3140/3140
 f 3133/3133 3170/3170 3140/3140
@@ -13450,7 +13450,7 @@ vn  -0.635650 -0.745447 -0.200645
 # 50 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 3236/3236 3237/3237 3219/3219
 f 3222/3222 3246/3246 3223/3223
@@ -13638,7 +13638,7 @@ vn  -0.583599 -0.778439 -0.231181
 # 40 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 2
 f 3265/3265 3289/3289 3274/3274
 f 3288/3288 3265/3265 3274/3274
@@ -13818,7 +13818,7 @@ vn  -0.464612 -0.788680 -0.402639
 # 44 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 3304/3304 3326/3326 3309/3309
 f 3326/3326 3327/3327 3309/3309
@@ -13996,7 +13996,7 @@ vn  -0.924461 -0.313594 -0.216868
 # 41 vertex normals
 
 g (null)
-#usemtl FLYPATA
+usemtl FLYPATA
 s 1
 f 3348/3348 3353/3353 3352/3352
 f 3382/3382 3360/3360 3370/3370
@@ -14972,7 +14972,7 @@ vn  -0.192945 0.954522 0.227288
 # 293 vertex normals
 
 g (null)
-#usemtl FLYALAS
+usemtl FLYALAS
 s 1
 f 3402/468/3402 3401/467/3401 3403/469/3403
 f 3401/467/3401 3400/466/3400 3403/469/3403
@@ -16156,7 +16156,7 @@ vn  0.192946 0.954522 0.227288
 # 293 vertex normals
 
 g (null)
-#usemtl FLYALAS
+usemtl FLYALAS
 s 1
 f 3694/760/3694 3695/761/3695 3696/762/3696
 f 3693/759/3693 3694/760/3694 3696/762/3696
@@ -16639,7 +16639,7 @@ vn  0.988470 -0.148894 0.027540
 # 90 vertex normals
 
 g (null)
-#usemtl FLYTCORT
+usemtl FLYTCORT
 s 16
 f 4061/4061 3975/3975 3976/3976
 f 4061/4061 3976/3976 3977/3977
@@ -16927,7 +16927,7 @@ vn  -0.973539 0.228190 0.012313
 # 90 vertex normals
 
 g (null)
-#usemtl FLYTCORT
+usemtl FLYTCORT
 s 16
 f 4065/4065 4151/4151 4066/4066
 f 4066/4066 4151/4151 4067/4067
@@ -18849,7 +18849,7 @@ vn  -0.974507 -0.008939 0.224180
 # 604 vertex normals
 
 g (null)
-#usemtl FLYTCAB
+usemtl FLYTCAB
 s 1
 f 4224/1110/4224 4225/1111/4225 4242/1128/4242
 f 4224/1110/4224 4226/1112/4226 4225/1111/4225
@@ -20946,7 +20946,7 @@ vn  -0.949655 -0.269399 0.159935
 # 268 vertex normals
 
 g (null)
-#usemtl FLYOJOS
+usemtl FLYOJOS
 s 1
 f 4759/1645/4759 4767/1653/4767 4772/1658/4772
 f 4763/1649/4763 4843/1729/4843 4764/1650/4764
@@ -22371,7 +22371,7 @@ vn  0.894960 -0.280465 0.346967
 # 297 vertex normals
 
 g (null)
-#usemtl FLYOJOS
+usemtl FLYOJOS
 s 1
 f 5032/1918/5032 5031/1917/5031 5040/1926/5040
 f 5041/1927/5041 5037/1923/5037 5047/1933/5047
@@ -24457,7 +24457,7 @@ vn  -0.168676 0.243930 0.955011
 # 494 vertex normals
 
 g (null)
-#usemtl FLYTCUL
+usemtl FLYTCUL
 s 1
 f 5333/2219/5333 5359/2245/5359 5360/2246/5360
 s 2

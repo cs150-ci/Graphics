@@ -22,5 +22,5 @@ specular 1 1 1 1
   emission 0.1367 0.418 0.5547 1
 #specular 1 1 1 1
 #shininess 100
-fly 2
+cone 2
 #tapestry 1

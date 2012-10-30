@@ -40,7 +40,7 @@ EXTERN int oldy ;
 EXTERN bool useGlu; // Toggle use of "official" opengl/glm transform vs user 
 EXTERN GLuint vertexshader, fragmentshader, shaderprogram ; // shaders
 static enum {view, translate, scale, oldview} transop ; // which operation to transform 
-enum shape {cube, sphere, teapot, castle, sword, shield, tapestry, fly, table} ;
+enum shape {cube, sphere, cone, teapot, castle, sword, shield, tapestry, fly, table} ;
 EXTERN float sx, sy ; // the scale in x and y 
 EXTERN float tx, ty ; // the translation in x and y
 
