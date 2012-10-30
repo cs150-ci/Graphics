@@ -153,6 +153,11 @@ translate 0 0 -0.2
         scale 2.5 1.5 1
         tapestry 1
   popTransform
+  pushTransform
+        translate 0 7.8 2.8
+        scale 3 2.2 1
+        tapestry 1
+  popTransform
 
 # Torches
   light 0.15 4 1.1 1 1 0.5 0.1 1
@@ -168,34 +173,6 @@ translate 0 0 -0.2
         translate -0.19 4 0.95
         scale 0.05 0.05 0.15
         cube 1
-  popTransform
-
-#Flames
-  diffuse 1 0.6645 0 1
-  pushTransform
-        translate 0.17 3.98 1.03
-        scale 0.015 0.015 0.015
-        cone 2
-  popTransform
-  pushTransform
-        translate -0.17 3.98 1.03
-        scale 0.015 0.015 0.015
-        cone 2
-  popTransform
-  pushTransform
-        translate 2.8 8.05 0.5
-        scale 0.1 0.1 0.1
-        cone 2
-  popTransform
-  pushTransform
-        translate 2.8 8 0.1
-        scale 0.11 0.11 0.11
-        cone 2
-  popTransform
-  pushTransform
-        translate 2.8 7.95 0.17
-        scale 0.12 0.12 0.12
-        cone 2
   popTransform
 
 # Table
@@ -222,6 +199,34 @@ translate 0 0 -0.2
         rotate 1 0 0 90
         scale 0.05 0.8 0.45
         cube 1
+  popTransform
+
+# Flames
+  diffuse 1 0.6645 0 1
+  pushTransform
+        translate 0.17 3.98 1.03
+        scale 0.015 0.015 0.015
+        cone 2
+  popTransform
+  pushTransform
+        translate -0.17 3.98 1.03
+        scale 0.015 0.015 0.015
+        cone 2
+  popTransform
+  pushTransform
+        translate 2.8 8.13 0.02
+        scale 0.1 0.1 0.1
+        cone 2
+  popTransform
+  pushTransform
+        translate 2.8 8 0
+        scale 0.12 0.12 0.12
+        cone 2
+  popTransform
+  pushTransform
+        translate 2.8 7.87 0.01
+        scale 0.11 0.11 0.11
+        cone 2
   popTransform
 
 # Fireplace
