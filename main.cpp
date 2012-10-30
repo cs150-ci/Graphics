@@ -134,7 +134,8 @@ void display() {
           glUniform4fv(specularcol,1,specular);
           glUniform4fv(emissioncol,1,emission);
           glUniform1f(shininesscol,shininess);
-          
+          glUniform1f(alphabptr,alphab);
+          glUniform1f(alphacptr,alphac);
         }
         else glUniform1i(enablelighting,false) ; 
 
@@ -197,9 +198,6 @@ void display() {
           else if (obj -> type == sword) {
             drawmodel((char*)"data/sword.obj", 1) ;
           }
-          else if (obj -> type == shield) {
-            drawmodel((char*)"data/fly.obj", 2) ;
-          }
           else if (obj -> type == tapestry) {
             if (toggleTexture) continue ;
             else if (wired) glBegin(GL_LINES) ;
@@ -213,11 +211,80 @@ void display() {
           else if (obj -> type == fly) {
             // Apply transformations here using gl functions (not including push/pop transforms)
             glTranslatef(flyx, flyy, flyz) ;
-            glTranslatef(-2.0, 5.0, 1.0) ;
+            //glTranslatef(-2.0, 5.0, 1.0) ;
             glRotatef(rotateamt, 0, 0, 1) ;
             glRotatef(90.0, 1, 0, 0) ;
             glScalef(0.05, 0.05, 0.05) ;
             drawmodel((char*)"data/fly.obj", 3) ;
+          }
+          else if (obj -> type == shield) {
+            vec3 normal, p1, p2, p3;
+            if (wired) glBegin(GL_LINES) ;
+            else glBegin(GL_QUADS);
+                glColor3f(0.8, 0.8, 0.8);
+                // Top Face
+                p1 = vec3(0, 0.4, 0.1);
+                p2 = vec3(0.25, 0.3, 0.1);
+                p3 = vec3(0, -0.4, 0.1);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0, 0.4, 0.1);
+                glVertex3f(0.25, 0.3, 0.1);
+                glVertex3f(0, -0.4, 0.1);
+                glVertex3f(-0.25, 0.3, 0.1);
+
+                // Bottom Face
+                p1 = vec3(0, 0.4, 0);
+                p2 = vec3(0.25, 0.3, 0);
+                p3 = vec3(0, -0.4, 0);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0, 0.4, 0);
+                glVertex3f(0.25, 0.3, 0);
+                glVertex3f(0, -0.4, 0);
+                glVertex3f(-0.25, 0.3, 0);
+
+                // In Between
+                p1 = vec3(0, 0.4, 0.1);
+                p2 = vec3(0, 0.4, 0);
+                p3 = vec3(0.25, 0.3, 0);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0, 0.4, 0.1);
+                glVertex3f(0, 0.4, 0);
+                glVertex3f(0.25, 0.3, 0);
+                glVertex3f(0.25, 0.3, 0.1);
+
+                p1 = vec3(0.25, 0.3, 0.1);
+                p2 = vec3(0.25, 0.3, 0);
+                p3 = vec3(0, -0.4, 0);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0.25, 0.3, 0.1);
+                glVertex3f(0.25, 0.3, 0);
+                glVertex3f(0, -0.4, 0);
+                glVertex3f(0, -0.4, 0.1);
+
+                p1 = vec3(0, -0.4, 0.1);
+                p2 = vec3(0, -0.4, 0);
+                p3 = vec3(-0.25, 0.3, 0);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(0, -0.4, 0.1);
+                glVertex3f(0, -0.4, 0);
+                glVertex3f(-0.25, 0.3, 0);
+                glVertex3f(-0.25, 0.3, 0.1);
+
+                p1 = vec3(-0.25, 0.3, 0.1);
+                p2 = vec3(-0.25, 0.3, 0);
+                p3 = vec3(0, 0.4, 0);
+                normal = glm::cross((p1-p2), (p3-p2));
+                glNormal3f(normal[0], normal[1], normal[2]);
+                glVertex3f(-0.25, 0.3, 0.1);
+                glVertex3f(-0.25, 0.3, 0);
+                glVertex3f(0, 0.4, 0);
+                glVertex3f(0, 0.4, 0.1);
+            glEnd();
           }
           else if (obj -> type == table) {
             // Hand draw table vertices/lines/faces + their (face) normals
@@ -416,8 +483,8 @@ void display() {
 void moveFly(void) {
     //if (moveright) flyx += 0.025 ;
     //else flyx -= 0.025 ;
-    if (movefwd) flyy += 0.025 ;
-    else flyy -= 0.025 ;
+    if (movefwd) flyy += 0.0025 ;
+    else flyy -= 0.0025 ;
     if (flyy > 1 || flyy < 0) {
         movefwd = !movefwd ;
         if (flyy > 1) rotateamt = 315.0 ;
@@ -461,38 +528,65 @@ void saveScreenshot(string fname) {
 
 void printHelp() {
   std::cout << "\npress 'h' to print this message again.\n"
-       << "press '+' or '-' to change the amount of rotation that\noccurs with each arrow press.\n"
+            << "press 'v' to toggle between movement interface [default] and crystal ball interface.\n"
+            << "press arrow keys to move/turn in movement or rotate view in crystal ball.\n"
+            << "drag mouse vertically or horizontally to rotate screen.\n"
+            << "press 'i' to zoom in and 'o' to zoom out.\n"
+            << "press 'x' to toggle texturing.\n"
+            << "press 'w' to toggle wireframe mode.\n"
+            << "press 'p' to change image mode between brightness, contrast, and rotation speed.\n"
+            << "press '+' or '-' to change the value corresponding to the current image mode.\n"
+            << "press 'a' to start/stop animations.\n"
+            << "press 'r' to reset the transformations and alpha values.\n"
+            << "press 'c' to capture a screenshot as \"screenshot.png\".\n"
             << "press 'g' to switch between using glm::lookAt and glm::Perspective or your own LookAt.\n"
-            << "press 'r' to reset the transformations.\n"
-            << "press 'p' to stop/start fly animation.\n"
-            << "press 'v' 't' 's' 'q' to do view [default], translate, scale, oldview [crystal ball interface].\n"
-            << "press up down arrow keys to move forward or backward.\n"
-            << "press left right arrow keys to rotate left or right.\n"
-            << "move mouse vertically (up/down) to rotate up or down.\n"
-            << "move mouse horizontally (left/right) to rotate left or right.\n"
-            << "press ESC to quit.\n" ;  
+            << "press 't' or 's' to translate or scale.\n"
+            << "press ESC to quit.\n";
 }
 
 int isAnimate = 1; // Animation flag
 void keyboard(unsigned char key, int x, int y) {
 	switch(key) {
+        case 'p': // Change image mode
+                imgmode = (imgmode+1)%3;
+                if (imgmode == 0) std::cout << "+/- set to changing brightness\n" ; 
+                else if (imgmode == 1) std::cout << "+/- set to changing contrast\n" ; 
+                else if (imgmode == 2) std::cout << "+/- set to changing rotation\n" ; 
+                break ;
 	case '+':
-		amount++;
-		std::cout << "amount set to " << amount << "\n" ;
+                if (imgmode == 0) {
+                  alphab += 0.1;
+                  std::cout << "brightness set to " << alphab << "\n" ;
+                }
+                else if (imgmode == 1) {
+                  alphac += 0.1;
+                  std::cout << "contrast set to " << alphac << "\n" ;
+                }
+                else {
+		  amount++;
+		  std::cout << "rotation speed set to " << amount << "\n" ;
+                }
 		break;
 	case '-':
-		amount--;
-		std::cout << "amount set to " << amount << "\n" ; 
+                if (imgmode == 0) {
+                  alphab -= 0.1;
+                  std::cout << "brightness set to " << alphab << "\n" ;
+                }
+                else if (imgmode == 1) {
+                  alphac -= 0.1;
+                  std::cout << "contrast set to " << alphac << "\n" ;
+                }
+                else {
+		  amount--;
+		  std::cout << "rotation speed set to " << amount << "\n" ; 
+                }
 		break;
-        case 'i':
-        // Zoom: change fovy, and change perspective by calling reshape()
-        // Instead of grader, zooms in
+        case 'i': // Zoom: change fovy, and change perspective by calling reshape()
                 fovy -= 1 ;
                 reshape(w,h) ;
                 std::cout << "fovy set to " << fovy << "\n" ;
                 break;
-        case 'o':
-        // Zooms out
+        case 'o': // Zooms out
                 fovy += 1 ;
                 reshape(w,h) ;
                 std::cout << "fovy set to " << fovy << "\n" ;
@@ -519,15 +613,17 @@ void keyboard(unsigned char key, int x, int y) {
                 tx = ty = 0.0 ;
                 fovy = fovyinit ;
                 reshape(w,h) ;
+                alphab = 1.0 ;
+                alphac = 1.0 ;
                 break ; 
         case 'v':
                 if (transop == oldview) {
                   transop = view ;
-                  std::cout << "Operation is set to View\n" ; 
+                  std::cout << "Operation is set to Movement Interface\n" ; 
                 }
                 else {
                   transop = oldview ;
-                  std::cout << "Operation is set to OldView (crystal ball interface)\n" ;
+                  std::cout << "Operation is set to Crystal Ball Interface\n" ;
                 }
                 break ; 
         case 't':
@@ -538,14 +634,13 @@ void keyboard(unsigned char key, int x, int y) {
                 transop = scale ; 
                 std::cout << "Operation is set to Scale\n" ; 
                 break ; 
-        case 'x': //Toggle texturing
+        case 'x': // Toggle texturing
                 toggleTexture = !toggleTexture ;
                 break ;
         case 'w': // Toggle wireframe
                 wired = !wired ;
                 break ;
-        case 'p':
-                // As in hw0
+        case 'a': // Start/Stop animations
                 isAnimate = !isAnimate ;
                 if (isAnimate) glutIdleFunc(moveFly);
                 else glutIdleFunc(NULL);
@@ -694,6 +789,10 @@ void init() {
       specularcol = glGetUniformLocation(shaderprogram,"specular") ;       
       emissioncol = glGetUniformLocation(shaderprogram,"emission") ;       
       shininesscol = glGetUniformLocation(shaderprogram,"shininess") ;       
+      alphabptr = glGetUniformLocation(shaderprogram,"alphab") ;  
+      alphab = 1.0 ;
+      alphacptr = glGetUniformLocation(shaderprogram,"alphac") ;  
+      alphac = 1.0 ;
 
       // Initialize textures
       LoadTexture((char*)"data/sky.tga", 0) ;

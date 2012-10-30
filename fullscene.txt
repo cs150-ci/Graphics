@@ -10,6 +10,9 @@ camera 0 -5 5 0 0 0 0 1 1 30.0
 # Sunlight
 light 0.6 0 0.1 0 1 0.5 0 1  
 #light 0 -0.6 0.1 1 0.5 0.5 1 1
+light 1.3 9.5 1.2 1 0.5 0.5 0.5 1
+specular 0.2 0.2 0.2 1
+shininess 10
 
 # I do a global transform to move this down a little 
 # A good use of matrix stacks and hierarchy 
@@ -124,7 +127,7 @@ translate 0 0 -0.2
   popTransform
   texture 4
   pushTransform
-        translate 0 -0.09 0.04
+        translate 0 -0.09 0.05
         scale 1.1 1 1
         tapestry 2.62
   popTransform
@@ -180,19 +183,32 @@ translate 0 0 -0.2
   ambient 0.1367 0.418 0.5547 1
   diffuse 0.1367 0.418 0.5547 1
   pushTransform
-        translate 1 10 1.2
+        translate 1 9.8 1.2
         scale 0.35 0.35 0.35
         sword 1
   popTransform
-  emission 0.1367 0.418 0.5547 1
-  specular 0.1367 0.418 0.5547 1
-  shininess 1
+  #emission 0.1367 0.418 0.5547 1
+  specular 1 1 1 1
+  shininess 100
   pushTransform
         translate 0 9 0.42
         rotate 0 0 1 30
         rotate 1 0 0 90
         scale 0.35 0.35 0.35
         sword 1
+  popTransform
+
+# Shield
+  pushTransform
+        translate 1.3 9.8 1.2
+        rotate 1 0 0 90
+        shield 1
+  popTransform
+
+# Fly
+  pushTransform
+        translate -1.3 8 1.2
+        fly 1
   popTransform
 
 # Tapestries

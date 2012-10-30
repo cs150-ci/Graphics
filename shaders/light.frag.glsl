@@ -33,10 +33,12 @@ uniform vec4 diffuse ;
 uniform vec4 specular ; 
 uniform vec4 emission ; 
 uniform float shininess ; 
+uniform float alphab ;
+uniform float alphac ;
 
 void main (void) 
 {
-    if (istex > 0) gl_FragColor = texture2D(tex, gl_TexCoord[0].st) ;
+    if (istex > 0) gl_FragColor = texture2D(tex, gl_TexCoord[0].st);
     else if (enablelighting) {       
         
         vec4 finalcolor ; 
@@ -81,11 +83,14 @@ void main (void)
             retval = lambert + phong;
             finalcolor += retval;
         }
-
-	    //Color all pixels blue for now, remove this in your implementation
-        //finalcolor = vec4(0,0,1,1); 
         
-        gl_FragColor = finalcolor ; 
+        gl_FragColor = finalcolor; 
         }
-    else gl_FragColor = color ; 
+    else gl_FragColor = color; 
+
+    // Changing brightness/contrast
+    vec3 lumCoeff = vec3(0.2125, 0.7154, 0.0721);
+    float luminance = dot(lumCoeff, vec3(0.5));
+    gl_FragColor.xyz = mix(vec3(luminance), gl_FragColor.xyz, alphac); 
+    gl_FragColor = gl_FragColor * alphab;
 }

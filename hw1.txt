@@ -6,17 +6,21 @@
 size 600 400
 camera 0 0 5 0 0 0 0 1 0 90.0
 
-#light 0 5 10 1 0.6 0.3 0.0 1.0 
-#light 0 5 -10 1 0 0.3 0.6 1 
+light 6.5 0 0 0 1 0.5 0 1.0 
+light 0 0 6.5 1 0 0.5 1.0 1 
 
 ambient 1 1 1 1 
 diffuse 1 1 1 1
 specular 1 1 1 1
-shininess 0
+#shininess 0
 
 # Parameter: 0 = no texture, 1 = wood, 2 = stone
-texture 1
-sphere 3
+#texture 1
+#sphere 3
 #castle 2
-#shield 2
+  ambient 0.1367 0.418 0.5547 1
+  emission 0.1367 0.418 0.5547 1
+#specular 1 1 1 1
+#shininess 100
+fly 2
 #tapestry 1

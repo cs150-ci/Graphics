@@ -25,9 +25,9 @@ readfile.o: readfile.cpp readfile.h variables.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c readfile.cpp
 Transform.o: Transform.cpp Transform.h 
 	$(CC) $(CFLAGS) $(INCFLAGS) -c Transform.cpp  
-Texture.o: Texture.cpp Texture.h glm.h variables.h
+Texture.o: Texture.cpp Texture.h Transform.h variables.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c Texture.cpp
-glm.o: glm.cpp glm.h
+glm.o: glm.cpp glm.h Texture.h Transform.h variables.h
 	$(CC) $(CFLAGS) $(INCFLAGS) -c glm.cpp
 clean: 
 	$(RM) *.o transforms *~
