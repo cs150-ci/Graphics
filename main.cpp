@@ -77,10 +77,10 @@ void drawmodel(char* filename, GLuint pos)
 GLfloat flyx = 0.0;
 GLfloat flyy = 0.0;
 GLfloat flyz = 0.0;
-GLint movefwd = 1;
-GLint moveright = 1;
-GLint moveup = 1;
-GLfloat rotateamt = 135.0;
+GLfloat flyangle = 0.0;
+GLfloat flyradius = 1.0;
+GLfloat rotateamt = 180.0;
+//GLint movefwd = 1;
 void display() {
 	glClearColor(0, 0, 1, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -210,8 +210,8 @@ void display() {
           }
           else if (obj -> type == fly) {
             // Apply transformations here using gl functions (not including push/pop transforms)
+            flyradius = obj->size ;
             glTranslatef(flyx, flyy, flyz) ;
-            //glTranslatef(-2.0, 5.0, 1.0) ;
             glRotatef(rotateamt, 0, 0, 1) ;
             glRotatef(90.0, 1, 0, 0) ;
             glScalef(0.05, 0.05, 0.05) ;
@@ -481,17 +481,24 @@ void display() {
 
 // Fly animation method
 void moveFly(void) {
-    //if (moveright) flyx += 0.025 ;
-    //else flyx -= 0.025 ;
+    // Circle movement
+    flyangle += 0.03 ;
+    if (flyangle >= 2*pi) flyangle = 0.0 ;
+    flyx = flyradius * (cos(flyangle) - 1);
+    flyy = flyradius * sin(flyangle) ;
+    flyz = flyangle/(2*pi) ;
+    if (flyz > 0.5) flyz = 1.0-flyz ;
+    rotateamt = 180.0 + flyangle * (180/pi);
+    glutPostRedisplay() ;
+
+    /* Line movement
     if (movefwd) flyy += 0.0025 ;
     else flyy -= 0.0025 ;
     if (flyy > 1 || flyy < 0) {
         movefwd = !movefwd ;
         if (flyy > 1) rotateamt = 315.0 ;
         else if (flyy < 0) rotateamt = 135.0 ;
-    }
-    //if (flyx > 0.5 || flyx < -0.5) moveright = !moveright ;
-    glutPostRedisplay() ;
+    }*/
 }
 
 // Uses the Projection matrices (technically deprecated) to set perspective 
@@ -544,7 +551,6 @@ void printHelp() {
             << "press ESC to quit.\n";
 }
 
-int isAnimate = 1; // Animation flag
 void keyboard(unsigned char key, int x, int y) {
 	switch(key) {
         case 'p': // Change image mode

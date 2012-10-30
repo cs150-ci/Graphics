@@ -93,6 +93,9 @@ EXTERN GLfloat texturing ; // global texture value
 EXTERN GLuint toggleTexture ;
 EXTERN bool wired ; // toggle wireframe mode
 
+// Animation
+EXTERN bool isAnimate ; // Animation flag
+
 // Changing Brightness
 EXTERN GLuint imgmode ; // toggle brightness/contrast/rotation
 EXTERN GLfloat alphab ; // alpha value passed to shaders
