@@ -5,7 +5,7 @@
 
 # Set the scene size and camera location 
 size 1150 750
-camera 0 -5 5 0 0 0 0 1 1 30.0
+camera 0 -4 5 0 0 0 0 1 1 30.0
 
 # Sunlight
 light 0.6 0 0.1 0 1 0.5 0 1  
@@ -27,7 +27,7 @@ translate 0 0 -0.2
         tapestry 1
   popTransform
   pushTransform
-        translate 0 -12 2
+        translate 0 -8 2
         rotate 1 0 0 45
         scale 20 20 1
         tapestry 1
@@ -57,12 +57,12 @@ translate 0 0 -0.2
   texture 3
   pushTransform
         translate 0 3.68 0
-        scale 4 1.7 1
+        scale 10 1.7 1
         tapestry 1
   popTransform
   pushTransform
-        translate 0 -4 0
-        scale 10 2 1
+        translate 0 -8 0
+        scale 10 6 1
         tapestry 1
   popTransform
 
@@ -96,12 +96,12 @@ translate 0 0 -0.2
   diffuse 0.3 0.3 0.3 1
   pushTransform
         translate 0 6 -1.53
-        scale 8 8 3
+        scale 20 8 3
         cube 1
   popTransform
   pushTransform
-        translate 0 -4 -1.53
-        scale 20 4 3
+        translate 0 -8 -1.53
+        scale 20 8 3
         cube 1
   popTransform
 
