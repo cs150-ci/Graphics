@@ -5,7 +5,7 @@
 
 # Set the scene size and camera location 
 size 1150 750
-camera 0 -5 5 0 0 0 0 1 1 30.0
+camera 0 -5 5 0 0 5 0 1 1 30.0
 
 # Sunlight
 light 0.6 0 0.1 0 1 0.5 0 1  

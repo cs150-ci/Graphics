@@ -143,7 +143,7 @@ void display() {
         // Transformations for objects, involving translation and scaling 
         mat4 sc(1.0) , tr(1.0), transf(1.0) ; 
         sc = Transform::scale(sx,sy,1.0) ; 
-        tr = Transform::translate(tx,ty,0.0) ; 
+        tr = Transform::translate(tx,ty,tz) ; 
 
         // YOUR CODE FOR HW 2 HERE.  
         // You need to use scale, translate and modelview to 
@@ -631,7 +631,7 @@ void keyboard(unsigned char key, int x, int y) {
                 up = upinit ;
                 center = centerinit ;
                 sx = sy = 1.0 ;
-                tx = ty = 0.0 ;
+                tx = ty = tz = 0.0 ;
                 fovy = fovyinit ;
                 reshape(w,h) ;
                 alphab = 1.0 ;
@@ -713,8 +713,6 @@ void specialKey(int key, int x, int y) {
             eye[1] += dy ;
             center[0] += dx ;
             center[1] += dy ;
-            up[0] += dx ;
-            up[1] += dy ;
           } else if (transop == scale) sy += amount * 0.01 ;
           else if (transop == translate) ty += amount * 0.01 ;
           else if (transop == oldview) Transform::up(amount, eye, up);
@@ -755,8 +753,6 @@ void specialKey(int key, int x, int y) {
             eye[1] -= dy ;
             center[0] -= dx ;
             center[1] -= dy ;
-            up[0] -= dx ;
-            up[1] -= dy ;
           } else if (transop == scale) sy -= amount * 0.01 ;
           else if (transop == translate) ty -= amount * 0.01 ;
           else if (transop == oldview) Transform::up(-amount, eye, up);
@@ -778,27 +774,33 @@ void drag(int x, int y) {
     // Mouse drag moves faster than arrow movements, so leave amount=0.25
     float radians = 0.25 * pi/180 ;
     if (dfx >= -10 && dfx <= 10 && dfy > 0) {
-        // Move up along yz plane
-        // Translate eye to origin (same), center by same amount
-        center = center - eye;
-        // Rotate center,up by amount
-        center[1] = center[1]*cos(radians) - center[2]*sin(radians) ;
-        center[2] = center[2]*cos(radians) + center[1]*sin(radians) ;
-        up[1] = up[1]*cos(radians) - up[2]*sin(radians) ;
-        up[2] = up[2]*cos(radians) + up[1]*sin(radians) ;
-        // Translate eye back (same), center by same amount
-        center = center + eye;
+        if (transop == translate) tz += amount * 0.01 ;
+        else {
+            // Move up along yz plane
+            // Translate eye to origin (same), center by same amount
+            center = center - eye;
+            // Rotate center,up by amount
+            center[1] = center[1]*cos(radians) - center[2]*sin(radians) ;
+            center[2] = center[2]*cos(radians) + center[1]*sin(radians) ;
+            up[1] = up[1]*cos(radians) - up[2]*sin(radians) ;
+            up[2] = up[2]*cos(radians) + up[1]*sin(radians) ;
+            // Translate eye back (same), center by same amount
+            center = center + eye;
+        }
     } else if (dfx >= -5 && dfx <= 5 && dfy <= 0) {
-        // Move down along yz plane
-        // Translate eye to origin (same), center by same amount
-        center = center - eye;
-        // Rotate center,up by amount
-        center[1] = center[1]*cos(-radians) - center[2]*sin(-radians) ;
-        center[2] = center[2]*cos(-radians) + center[1]*sin(-radians) ;
-        up[1] = up[1]*cos(-radians) - up[2]*sin(-radians) ;
-        up[2] = up[2]*cos(-radians) + up[1]*sin(-radians) ;
-        // Translate eye back (same), center by same amount
-        center = center + eye;
+        if (transop == translate) tz -= amount * 0.01 ;
+        else {
+            // Move down along yz plane
+            // Translate eye to origin (same), center by same amount
+            center = center - eye;
+            // Rotate center,up by amount
+            center[1] = center[1]*cos(-radians) - center[2]*sin(-radians) ;
+            center[2] = center[2]*cos(-radians) + center[1]*sin(-radians) ;
+            up[1] = up[1]*cos(-radians) - up[2]*sin(-radians) ;
+            up[2] = up[2]*cos(-radians) + up[1]*sin(-radians) ;
+            // Translate eye back (same), center by same amount
+            center = center + eye;
+        }
     } else if (dfx > 0 && dfy >= -20 && dfy <= 20) {
         // Move right along xy plane
         // Translate eye to origin (same), center by same amount

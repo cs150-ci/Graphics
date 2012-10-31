@@ -42,7 +42,7 @@ EXTERN GLuint vertexshader, fragmentshader, shaderprogram ; // shaders
 static enum {view, translate, scale, oldview} transop ; // which operation to transform 
 enum shape {cube, sphere, cone, teapot, castle, sword, shield, tapestry, fly, table} ;
 EXTERN float sx, sy ; // the scale in x and y 
-EXTERN float tx, ty ; // the translation in x and y
+EXTERN float tx, ty, tz ; // the translation in x and y
 
 // Lighting parameter array, similar to that in the fragment shader
 const int numLights = 10 ; 
