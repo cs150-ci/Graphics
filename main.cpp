@@ -137,13 +137,14 @@ void display() {
           glUniform1f(shininesscol,shininess);
           glUniform1f(alphabptr,alphab);
           glUniform1f(alphacptr,alphac);
+          glUniform1f(alphasptr,alphas);
         }
         else glUniform1i(enablelighting,false) ; 
 
         // Transformations for objects, involving translation and scaling 
         mat4 sc(1.0) , tr(1.0), transf(1.0) ; 
         sc = Transform::scale(sx,sy,1.0) ; 
-        tr = Transform::translate(tx,ty,0.0) ; 
+        tr = Transform::translate(tx,ty,tz) ; 
 
         // YOUR CODE FOR HW 2 HERE.  
         // You need to use scale, translate and modelview to 
@@ -556,7 +557,7 @@ void printHelp() {
             << "press 'i' to zoom in and 'o' to zoom out.\n"
             << "press 'x' to toggle texturing.\n"
             << "press 'w' to toggle wireframe mode.\n"
-            << "press 'p' to change image mode between brightness, contrast, and rotation speed.\n"
+            << "press 'p' to change image mode between brightness, contrast, saturation, and rotation speed.\n"
             << "press '+' or '-' to change the value corresponding to the current image mode.\n"
             << "press 'a' to start/stop animations.\n"
             << "press 'r' to reset the transformations and alpha values.\n"
@@ -569,12 +570,13 @@ void printHelp() {
 void keyboard(unsigned char key, int x, int y) {
 	switch(key) {
         case 'p': // Change image mode
-                imgmode = (imgmode+1)%3;
+                imgmode = (imgmode+1)%4;
                 if (imgmode == 0) std::cout << "+/- set to changing brightness\n" ; 
                 else if (imgmode == 1) std::cout << "+/- set to changing contrast\n" ; 
-                else if (imgmode == 2) std::cout << "+/- set to changing rotation\n" ; 
+                else if (imgmode == 2) std::cout << "+/- set to changing saturation\n" ;
+                else if (imgmode == 3) std::cout << "+/- set to changing rotation\n" ; 
                 break ;
-	case '+':
+	    case '+':
                 if (imgmode == 0) {
                   alphab += 0.1;
                   std::cout << "brightness set to " << alphab << "\n" ;
@@ -583,12 +585,16 @@ void keyboard(unsigned char key, int x, int y) {
                   alphac += 0.1;
                   std::cout << "contrast set to " << alphac << "\n" ;
                 }
+                else if (imgmode == 2) {
+                  alphas += 0.1;
+                  std::cout << "saturation set to " << alphas << "\n" ;
+                }
                 else {
-		  amount++;
-		  std::cout << "rotation speed set to " << amount << "\n" ;
+        		  amount++;
+	        	  std::cout << "rotation speed set to " << amount << "\n" ;
                 }
 		break;
-	case '-':
+	    case '-':
                 if (imgmode == 0) {
                   alphab -= 0.1;
                   std::cout << "brightness set to " << alphab << "\n" ;
@@ -596,6 +602,10 @@ void keyboard(unsigned char key, int x, int y) {
                 else if (imgmode == 1) {
                   alphac -= 0.1;
                   std::cout << "contrast set to " << alphac << "\n" ;
+                }
+                else if (imgmode == 2) {
+                  alphas -= 0.1;
+                  std::cout << "saturation set to " << alphas << "\n" ;
                 }
                 else {
 		  amount--;
@@ -631,11 +641,12 @@ void keyboard(unsigned char key, int x, int y) {
                 up = upinit ;
                 center = centerinit ;
                 sx = sy = 1.0 ;
-                tx = ty = 0.0 ;
+                tx = ty = tz = 0.0 ;
                 fovy = fovyinit ;
                 reshape(w,h) ;
                 alphab = 1.0 ;
                 alphac = 1.0 ;
+                alphas = 1.0 ;
                 break ; 
         case 'v':
                 if (transop == oldview) {
@@ -704,8 +715,6 @@ void specialKey(int key, int x, int y) {
             eye[1] += dy ;
             center[0] += dx ;
             center[1] += dy ;
-            up[0] += dx ;
-            up[1] += dy ;
           } else if (transop == scale) sy += amount * 0.01 ;
           else if (transop == translate) ty += amount * 0.01 ;
           else if (transop == oldview) Transform::up(amount, eye, up);
@@ -738,8 +747,6 @@ void specialKey(int key, int x, int y) {
             eye[1] -= dy ;
             center[0] -= dx ;
             center[1] -= dy ;
-            up[0] -= dx ;
-            up[1] -= dy ;
           } else if (transop == scale) sy -= amount * 0.01 ;
           else if (transop == translate) ty -= amount * 0.01 ;
           else if (transop == oldview) Transform::up(-amount, eye, up);
@@ -761,27 +768,33 @@ void drag(int x, int y) {
     // Mouse drag moves faster than arrow movements, so leave amount=0.25
     float radians = 0.25 * pi/180 ;
     if (dfx >= -10 && dfx <= 10 && dfy > 0) {
-        // Move up along yz plane
-        // Translate eye to origin (same), center by same amount
-        center = center - eye;
-        // Rotate center,up by amount
-        center[1] = center[1]*cos(radians) - center[2]*sin(radians) ;
-        center[2] = center[2]*cos(radians) + center[1]*sin(radians) ;
-        up[1] = up[1]*cos(radians) - up[2]*sin(radians) ;
-        up[2] = up[2]*cos(radians) + up[1]*sin(radians) ;
-        // Translate eye back (same), center by same amount
-        center = center + eye;
-    } else if (dfx >= -5 && dfx <= 5 && dfy <= 0) {
-        // Move down along yz plane
-        // Translate eye to origin (same), center by same amount
-        center = center - eye;
-        // Rotate center,up by amount
-        center[1] = center[1]*cos(-radians) - center[2]*sin(-radians) ;
-        center[2] = center[2]*cos(-radians) + center[1]*sin(-radians) ;
-        up[1] = up[1]*cos(-radians) - up[2]*sin(-radians) ;
-        up[2] = up[2]*cos(-radians) + up[1]*sin(-radians) ;
-        // Translate eye back (same), center by same amount
-        center = center + eye;
+        if (transop == translate) tz += amount * 0.01 ;
+        else {
+            // Move up along yz plane
+            // Translate eye to origin (same), center by same amount
+            center = center - eye;
+            // Rotate center,up by amount
+            center[1] = center[1]*cos(radians) - center[2]*sin(radians) ;
+            center[2] = center[2]*cos(radians) + center[1]*sin(radians) ;
+            up[1] = up[1]*cos(radians) - up[2]*sin(radians) ;
+            up[2] = up[2]*cos(radians) + up[1]*sin(radians) ;
+            // Translate eye back (same), center by same amount
+            center = center + eye;
+        }
+    } else if (dfx >= -10 && dfx <= 10 && dfy <= 0) {
+        if (transop == translate) tz -= amount * 0.01 ;
+        else {
+            // Move down along yz plane
+            // Translate eye to origin (same), center by same amount
+            center = center - eye;
+            // Rotate center,up by amount
+            center[1] = center[1]*cos(-radians) - center[2]*sin(-radians) ;
+            center[2] = center[2]*cos(-radians) + center[1]*sin(-radians) ;
+            up[1] = up[1]*cos(-radians) - up[2]*sin(-radians) ;
+            up[2] = up[2]*cos(-radians) + up[1]*sin(-radians) ;
+            // Translate eye back (same), center by same amount
+            center = center + eye;
+        }
     } else if (dfx > 0 && dfy >= -20 && dfy <= 20) {
         // Move right along xy plane
         // Translate eye to origin (same), center by same amount
@@ -831,6 +844,8 @@ void init() {
       alphab = 1.0 ;
       alphacptr = glGetUniformLocation(shaderprogram,"alphac") ;  
       alphac = 1.0 ;
+      alphasptr = glGetUniformLocation(shaderprogram,"alphas") ;
+      alphas = 1.0 ;
 
       // Initialize textures
       LoadTexture((char*)"data/sky.tga", 0) ;
