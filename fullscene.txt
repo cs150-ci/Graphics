@@ -56,12 +56,12 @@ translate 0 0 -0.2
 # Grass
   texture 3
   pushTransform
-        translate 0 3.68 0.18
+        translate 0 3.68 0
         scale 4 1.7 1
         tapestry 1
   popTransform
-  push Transform
-        translate 0 -4 0.18
+  pushTransform
+        translate 0 -4 0
         scale 10 2 1
         tapestry 1
   popTransform
@@ -237,7 +237,6 @@ translate 0 0 -0.2
   pushTransform
     texture 5
     translate 2.8 8 0.4
-    #translate 0 0 0.6
     rotate 0 0 1 90
     scale 1.5 1.5 1
     pushTransform
