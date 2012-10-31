@@ -136,6 +136,7 @@ void display() {
           glUniform1f(shininesscol,shininess);
           glUniform1f(alphabptr,alphab);
           glUniform1f(alphacptr,alphac);
+          glUniform1f(alphasptr,alphas);
         }
         else glUniform1i(enablelighting,false) ; 
 
@@ -559,12 +560,13 @@ void printHelp() {
 void keyboard(unsigned char key, int x, int y) {
 	switch(key) {
         case 'p': // Change image mode
-                imgmode = (imgmode+1)%3;
+                imgmode = (imgmode+1)%4;
                 if (imgmode == 0) std::cout << "+/- set to changing brightness\n" ; 
                 else if (imgmode == 1) std::cout << "+/- set to changing contrast\n" ; 
-                else if (imgmode == 2) std::cout << "+/- set to changing rotation\n" ; 
+                else if (imgmode == 2) std::cout << "+/- set to changing saturation\n" ; 
+                else if (imgmode == 3) std::cout << "+/- set to changing rotation\n" ;
                 break ;
-	case '+':
+	    case '+':
                 if (imgmode == 0) {
                   alphab += 0.1;
                   std::cout << "brightness set to " << alphab << "\n" ;
@@ -573,12 +575,16 @@ void keyboard(unsigned char key, int x, int y) {
                   alphac += 0.1;
                   std::cout << "contrast set to " << alphac << "\n" ;
                 }
-                else {
-		  amount++;
-		  std::cout << "rotation speed set to " << amount << "\n" ;
+                else if (imgmode == 2) {
+                    alphas += 0.1;
+                    std::cout << "saturation set to " << alphas << "\n";
                 }
-		break;
-	case '-':
+                else {
+		        amount++;
+		        std::cout << "rotation speed set to " << amount << "\n" ;
+                }
+		        break;
+	    case '-':
                 if (imgmode == 0) {
                   alphab -= 0.1;
                   std::cout << "brightness set to " << alphab << "\n" ;
@@ -587,11 +593,15 @@ void keyboard(unsigned char key, int x, int y) {
                   alphac -= 0.1;
                   std::cout << "contrast set to " << alphac << "\n" ;
                 }
-                else {
-		  amount--;
-		  std::cout << "rotation speed set to " << amount << "\n" ; 
+                else if (imgmode == 2) {
+                    alphas -= 0.1;
+                    std::cout << "saturation set to " << alphas << "\n" ;
                 }
-		break;
+                else {
+		            amount--;
+		            std::cout << "rotation speed set to " << amount << "\n" ; 
+                }
+		        break;
         case 'i': // Zoom: change fovy, and change perspective by calling reshape()
                 fovy -= 1 ;
                 reshape(w,h) ;
@@ -626,6 +636,7 @@ void keyboard(unsigned char key, int x, int y) {
                 reshape(w,h) ;
                 alphab = 1.0 ;
                 alphac = 1.0 ;
+                alphas = 1.0 ;
                 break ; 
         case 'v':
                 if (transop == oldview) {
@@ -837,6 +848,8 @@ void init() {
       alphab = 1.0 ;
       alphacptr = glGetUniformLocation(shaderprogram,"alphac") ;  
       alphac = 1.0 ;
+      alphasptr = glGetUniformLocation(shaderprogram,"alphas") ;
+      alphas = 1.0 ;
 
       // Initialize textures
       LoadTexture((char*)"data/sky.tga", 0) ;

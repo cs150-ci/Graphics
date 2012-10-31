@@ -35,6 +35,7 @@ uniform vec4 emission ;
 uniform float shininess ; 
 uniform float alphab ;
 uniform float alphac ;
+uniform float alphas ;
 
 void main (void) 
 {
@@ -88,9 +89,11 @@ void main (void)
         }
     else gl_FragColor = color; 
 
-    // Changing brightness/contrast
+    // Changing brightness/contrast/saturation
     vec3 lumCoeff = vec3(0.2125, 0.7154, 0.0721);
     float luminance = dot(lumCoeff, vec3(0.5));
+    float intensity = dot(gl_FragColor.xyz, lumCoeff);
+    gl_FragColor.xyz = mix(vec3(intensity), gl_FragColor.xyz, alphas);
     gl_FragColor.xyz = mix(vec3(luminance), gl_FragColor.xyz, alphac); 
     gl_FragColor = gl_FragColor * alphab;
 }
