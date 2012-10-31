@@ -3,9 +3,7 @@ Name: Cheng-yu Hong (cs184-eh)
 
 Website: castle-scene.atwebpages.com
 
-DETAILS:
-
-We created a castle scene, 
+DETAILS: This project showcases a surrealistic castle scene created for the Foundations of Computer Graphics class at the University of California - Berkeley. The code is mostly done using OpenGL. Some interesting aspects of the project includes shader effects such as changing brightness and contrast, toggling of textures and wireframes, and insect/flame animations.
 
 Scene Objects: Castle, drawbridge/moat, table, kiteshield, shield (rectangular), sword, fireplace, torches, ground floor, mace, fly
 
