@@ -80,6 +80,7 @@ GLfloat flyz = 0.0;
 GLfloat flyangle = 0.0;
 GLfloat flyradius = 1.0;
 GLfloat rotateamt = 180.0;
+GLfloat flicker = 0.0;
 //GLint movefwd = 1;
 void display() {
 	glClearColor(0, 0, 1, 0);
@@ -189,9 +190,11 @@ void display() {
             else glutSolidSphere(obj->size, tessel, tessel) ; 
           }
           else if (obj -> type == cone) {
+            glRotatef(flicker+10*obj->size, 0, 0, 1) ;
+            glRotatef(obj->size, 1, 0, 0) ;
             const int tessel = 20 ; 
-            if (wired) glutWireCone(1, obj->size, tessel, tessel) ; 
-            else glutSolidCone(1, obj->size, tessel, tessel) ; 
+            if (wired) glutWireCone(1, 2, tessel, tessel) ; 
+            else glutSolidCone(1, 2, tessel, tessel) ; 
           }
           else if (obj -> type == teapot) {
             if (wired) glutWireTeapot(obj->size) ;
@@ -484,17 +487,24 @@ void display() {
         glutSwapBuffers();
 }
 
+// Flame animation method
+void flickerFlame(void) {
+    flicker += 20.0 ;
+    if (flicker >= 360) flicker = 0.0 ;
+    glutPostRedisplay() ;
+}
+
 // Fly animation method
 void moveFly(void) {
     // Circle movement
     flyangle += 0.03 ;
     if (flyangle >= 2*pi) flyangle = 0.0 ;
-    flyx = flyradius * (cos(flyangle) - 1);
+    flyx = flyradius * (cos(flyangle) - 1) ;
     flyy = flyradius * sin(flyangle) ;
     flyz = flyangle/(2*pi) ;
     if (flyz > 0.5) flyz = 1.0-flyz ;
-    rotateamt = 180.0 + flyangle * (180/pi);
-    glutPostRedisplay() ;
+    rotateamt = 180.0 + flyangle * (180/pi) ;
+    flickerFlame() ;
 
     /* Line movement
     if (movefwd) flyy += 0.0025 ;
@@ -654,7 +664,7 @@ void keyboard(unsigned char key, int x, int y) {
         case 'a': // Start/Stop animations
                 isAnimate = !isAnimate ;
                 if (isAnimate) glutIdleFunc(moveFly);
-                else glutIdleFunc(NULL);
+                else glutIdleFunc(flickerFlame);
                 break;
         }
 	glutPostRedisplay();
@@ -666,10 +676,6 @@ void keyboard(unsigned char key, int x, int y) {
 void specialKey(int key, int x, int y) {
     switch(key) {
     case 100: //left
-          /*if (transop == view) Transform::left(amount, eye, up);
-            else if (transop == scale) sx -= amount * 0.01 ;
-            else if (transop == translate) tx -= amount * 0.01 ;
-          */
           // Moving left = rotating left
           if (transop == view) {
             float radians = amount/2 * pi/180 ;
@@ -688,10 +694,6 @@ void specialKey(int key, int x, int y) {
           else if (transop == oldview) Transform::left(amount, eye, up);
           break;
     case 101: //up
-          /*if (transop == view) Transform::up(amount, eye, up);
-            else if (transop == scale) sy += amount * 0.01 ;
-            else if (transop == translate) ty += amount * 0.01 ;
-          */
           // Moving up = moving forward
           if (transop == view) {
             // Get change in x/y directions, and normalize by some constant
@@ -709,10 +711,6 @@ void specialKey(int key, int x, int y) {
           else if (transop == oldview) Transform::up(amount, eye, up);
           break;
     case 102: //right
-          /*if (transop == view) Transform::left(-amount, eye, up);
-            else if (transop == scale) sx += amount * 0.01 ;
-            else if (transop == translate) tx += amount * 0.01 ;
-          */
           // Moving right = rotating right
           if (transop == view) {
             float radians = amount/2 * pi/180 ;
@@ -730,10 +728,6 @@ void specialKey(int key, int x, int y) {
           else if (transop == oldview) Transform::left(-amount, eye, up);
           break;
     case 103: //down
-          /*if (transop == view) Transform::up(-amount, eye, up);
-            else if (transop == scale) sy -= amount * 0.01 ;
-            else if (transop == translate) ty -= amount * 0.01 ;
-          */
           // Moving down = moving backward
           if (transop == view) {
             // Get change in x/y directions, and normalize by some constant
