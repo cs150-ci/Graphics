@@ -4,7 +4,7 @@
 # Scene File for Castle
 
 # Set the scene size and camera location 
-size 500 500
+size 1150 750
 camera 0 -4 5 0 0 0 0 1 1 30.0
 
 # Sunlight
